@@ -7,7 +7,10 @@ public class Ace : ModuleRules
 	public Ace(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
+		
+		MinFilesUsingPrecompiledHeaderOverride = 1;
+		bUseUnity = false;
+
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core",
@@ -20,15 +23,15 @@ public class Ace : ModuleRules
 		{
 			
 		});
-		
+
 		PublicIncludePaths.AddRange(new string[]
 		{
 			"Ace"
 		});
-
+		
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
-		
+
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
 
