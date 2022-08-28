@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Components/TimelineComponent.h"
 #include "AcePlayerAnimInstance.generated.h"
 
 class AAcePlayerCharacter;
 class AAceBaseWeapon;
 class UAceWeaponComponent;
+class UCurveVector;
 
 UCLASS()
 class ACE_API UAcePlayerAnimInstance : public UAnimInstance
@@ -18,7 +20,16 @@ class ACE_API UAcePlayerAnimInstance : public UAnimInstance
 public:
     UPROPERTY(BlueprintReadOnly, Category="Recoil")
     FTransform RecoilTransform;
-    UPROPERTY(BlueprintReadOnly, Category="Recoil")
+
+    void Fire();
+    
+    float MoveRightValue;
+    float MoveForwardValue;
+    float ShakingModifier = 1.0f;
+
+    bool bIsMovingRight = false;
+    bool bIsMovingForward = false;
+    
     FTransform FinalRecoilTransform;
     
 protected:
@@ -30,38 +41,76 @@ protected:
 
     UPROPERTY(BlueprintReadOnly, Category="Character")
     AAcePlayerCharacter* Character;
-
-    AAceBaseWeapon* CurrentWeapon;
     
-    UAceWeaponComponent* WeaponComponent;
-
-    APlayerController* PlayerController;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    AAceBaseWeapon* CurrentWeapon;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Anim")
-    float Velocity;
+    float CharacterVelocity;
+    
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Anim")
     float Direction;
+    
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Anim")
     float ADSAlpha;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Anim")
-    FRotator ActualRotation;
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Anim")
     FRotator AimOffsetRotation;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="test")
-    FTransform CameraTransform;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="test")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Anim")
+    FRotator FinalTurnRotation;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
     FTransform RelativeCameraTransform;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="test")
-    FTransform RHandToSightsTransform;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    FTransform LeftHandTransform;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    FTransform RelativeHandTransform;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    FTransform SidesWeaponSway;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    FTransform MoveInSidesSway;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    FVector WalkSwayLocation;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UCurveVector* WalkCurve;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UCurveVector* MoveInSidesCurve;
+    
+    UAceWeaponComponent* WeaponComponent;
+
+    APlayerController* PlayerController;
+    
+    FRotator ActualRotation;
+    FRotator OldTurnRotation;
+    FRotator TurnRotation;
     
 private:
-    void SetADSAlpha(float DeltaSeconds);
-    void SetAimOffset();
     void SetCharacterVars();
+    void SetAimOffset();
     void SetRelativeCameraTransform();
-    virtual void SetIKTransforms();
+    void SetADSAlpha(float DeltaSeconds);
+    void SetWalkWeaponSway(float DeltaSeconds);
+    void SetMoveInSides(float DeltaSeconds);
+    void SetTurnWeaponSway(float DeltaSeconds);
+    void GetLeftHandTransform();
+    void GetRelativeRightHandTransform();
+    
+    void InterpFinalRecoil(float DeltaSeconds);
+    void InterpRecoil(float DeltaSeconds);
+    
+    UFUNCTION()
+    void TimelineUpdate(FVector MoveVector);
+
+    FTimeline TimeLine;
     
     FTransform GetSocketTransform(USceneComponent* Object, FName Socket);
 };
+

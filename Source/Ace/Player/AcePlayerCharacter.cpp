@@ -46,30 +46,57 @@ void AAcePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
     PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AAcePlayerCharacter::Aim);
     PlayerInputComponent->BindAction("Aim", IE_Released, this, &AAcePlayerCharacter::ResetAim);
     PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &UAceWeaponComponent::NextWeapon);
+    PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &UAceWeaponComponent::Reload);
 }
 
 void AAcePlayerCharacter::MoveForward(float Value)
 {
-	if (Value == 0.0f) return;
-
-	AddMovementInput(GetActorForwardVector(), Value);
+    if(!AnimInstance) return;
+    
+	if (Value == 0.0f)
+	{
+	    AnimInstance->bIsMovingForward = false;
+	}
+    else
+    {
+        AddMovementInput(GetActorForwardVector(), Value);
+        AnimInstance->MoveForwardValue = Value;
+        AnimInstance->bIsMovingForward = true;
+    }
 }
 
 void AAcePlayerCharacter::MoveRight(float Value)
 {
-	if (Value == 0.0f) return;
+    if(!AnimInstance) return;
 
-	AddMovementInput(GetActorRightVector(), Value);
+	if (Value == 0.0f)
+	{
+	    AnimInstance->bIsMovingRight = false;    
+	}
+    else
+    {
+        AddMovementInput(GetActorRightVector(), Value);
+        AnimInstance->MoveRightValue = Value;
+        AnimInstance->bIsMovingRight = true;
+    }
 }
 
 void AAcePlayerCharacter::Aim()
 {
     ADSAlpha = 1.0f;
+    GetMesh()->SetTickGroup(TG_PostUpdateWork);
+    if (AnimInstance)
+        AnimInstance->ShakingModifier = 0.1;
+   //CameraComponent->SetFieldOfView(60);
 }
 
 void AAcePlayerCharacter::ResetAim()
 {
     ADSAlpha = 0.0f;
+    GetMesh()->SetTickGroup(TG_PrePhysics);
+    if (AnimInstance)
+        AnimInstance->ShakingModifier = 1.0f;
+    //CameraComponent->SetFieldOfView(90);
 }
 
 

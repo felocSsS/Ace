@@ -36,6 +36,7 @@ public:
 
     void StartFire();
     void StopFire();
+    void Reload();
     virtual void NextWeapon();
     
 protected:
@@ -56,5 +57,8 @@ protected:
     
 private:
     void SpawnWeapons();
+    void ChangeClip();
     void AttachWeaponToSocket(AAceBaseWeapon* Weapon, USceneComponent* SceneComponent, const FName SocketName);
+
+    bool CanReload() const;
 };

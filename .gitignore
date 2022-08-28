@@ -2,6 +2,27 @@
 .vs/
 .idea/
 Content/GitIgnore
+Content/FPS_Weapon_Bundle/Weapons/Materials/G67_Grenade
+Content/FPS_Weapon_Bundle/Weapons/Meshes/G67_Grenade
+Content/FPS_Weapon_Bundle/Weapons/Textures/G67_Grenade
+
+Content/FPS_Weapon_Bundle/Weapons/Materials/Ka47
+Content/FPS_Weapon_Bundle/Weapons/Meshes/Ka47
+Content/FPS_Weapon_Bundle/Weapons/Textures/Ka47
+
+Content/FPS_Weapon_Bundle/Weapons/Materials/KA74U
+Content/FPS_Weapon_Bundle/Weapons/Meshes/KA74U
+Content/FPS_Weapon_Bundle/Weapons/Textures/KA74U
+
+Content/FPS_Weapon_Bundle/Weapons/Materials/M9_Knife
+Content/FPS_Weapon_Bundle/Weapons/Meshes/M9_Knife
+Content/FPS_Weapon_Bundle/Weapons/Textures/M9_Knife
+
+Content/FPS_Weapon_Bundle/Weapons/Materials/SMG11
+Content/FPS_Weapon_Bundle/Weapons/Meshes/SMG11
+Content/FPS_Weapon_Bundle/Weapons/Textures/SMG11
+
+Content/FPS_Weapon_Bundle/Maps
 
 # Compiled Object files
 *.slo

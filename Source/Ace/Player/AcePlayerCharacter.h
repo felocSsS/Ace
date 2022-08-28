@@ -29,6 +29,11 @@ public:
 
     float ADSAlpha;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Vars")
+    float ForwardValue;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Vars")
+    float RightValue;
+
 protected:
     virtual void BeginPlay() override;
 

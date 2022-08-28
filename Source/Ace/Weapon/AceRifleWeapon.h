@@ -8,6 +8,8 @@
 #include "AceRifleWeapon.generated.h"
 
 class UCurveVector;
+class UAcePlayerAnimInstance;
+class AAceBaseWeaponAttachment;
 
 UCLASS()
 class ACE_API AAceRifleWeapon : public AAceBaseWeapon
@@ -31,17 +33,17 @@ protected:
     
     virtual void BeginPlay() override;
     virtual void MakeShot() override;
-    virtual void AddRecoil() override;
-
-    float CurrentRecoilTime = 0.0f;
+    virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd, FVector& EditedDir) const override;
+    
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
+    UAcePlayerAnimInstance* AnimInstance;
 private:
     FTimerHandle ShotTimerHandle;
     FTimeline TimeLine;
-
+    
     UFUNCTION()
     void TimelineUpdate(FVector RecoilVector);
-
-    
     
     AController* GetController() const;
 };
+

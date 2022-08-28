@@ -76,6 +76,19 @@ void UAceWeaponComponent::StopFire()
     CurrentWeapon->StopFire();
 }
 
+void UAceWeaponComponent::Reload()
+{
+    ChangeClip();
+}
+
+void UAceWeaponComponent::ChangeClip()
+{
+    if (!CanReload()) return;
+    
+    CurrentWeapon->StopFire();
+    CurrentWeapon->ChangeClip();
+}
+
 void UAceWeaponComponent::NextWeapon()
 {
     if (!CanEquip()) return;
@@ -92,4 +105,9 @@ bool UAceWeaponComponent::CanEquip() const
 bool UAceWeaponComponent::CanFire() const
 {
     return true;
+}
+
+bool UAceWeaponComponent::CanReload() const
+{
+    return CurrentWeapon &&  CurrentWeapon->CanReload();
 }
