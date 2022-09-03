@@ -1,9 +1,9 @@
 // Ace Game. All Rights Reserved.
 
-
 #include "Player/AcePlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Animation/AcePlayerAnimInstance.h"
+#include "Components/AceInventoryComponent.h"
 #include "Components/AceWeaponComponent.h"
 
 AAcePlayerCharacter::AAcePlayerCharacter()
@@ -21,6 +21,8 @@ AAcePlayerCharacter::AAcePlayerCharacter()
     ClientMesh->bVisibleInReflectionCaptures = false;
     ClientMesh->SetTickGroup(ETickingGroup::TG_PostPhysics);
     ClientMesh->SetupAttachment(GetMesh());
+
+    InventoryComponent = CreateDefaultSubobject<UAceInventoryComponent>(TEXT("InventoryComponent"));
 }
 
 void AAcePlayerCharacter::BeginPlay()

@@ -30,6 +30,7 @@ void UAceWeaponComponent::SpawnWeapons()
         if(!SpawnedWeapon) return;
 
         SpawnedWeapon->SetOwner(Character);
+        SpawnedWeapon->SpawnAttachment();
         Weapons.Add(SpawnedWeapon);
 
         AttachWeaponToSocket(SpawnedWeapon, Character->GetMesh(), "InventorySlotSocket");

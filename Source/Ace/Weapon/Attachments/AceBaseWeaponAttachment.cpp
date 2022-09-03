@@ -14,9 +14,6 @@ AAceBaseWeaponAttachment::AAceBaseWeaponAttachment()
 void AAceBaseWeaponAttachment::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	    
-	
 }
 
 FTransform AAceBaseWeaponAttachment::GetAttachmentSocket(FName SocketName) const

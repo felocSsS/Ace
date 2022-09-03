@@ -42,7 +42,9 @@ private:
     FTimeline TimeLine;
     
     UFUNCTION()
-    void TimelineUpdate(FVector RecoilVector);
+    void TimelineUpdate(const FVector RecoilVector) const;
+
+    virtual void GetDefaultItemObject() override;
     
     AController* GetController() const;
 };

@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "AceBaseItem.h"
 #include "AceBaseWeaponAttachment.generated.h"
 
 UCLASS()
-class ACE_API AAceBaseWeaponAttachment : public AActor
+class ACE_API AAceBaseWeaponAttachment : public AAceBaseItem
 {
 	GENERATED_BODY()
 	

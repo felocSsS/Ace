@@ -9,6 +9,7 @@
 class UCameraComponent;
 class UAcePlayerAnimInstance;
 class USkeletalMeshComponent;
+class UAceInventoryComponent;
 
 UCLASS()
 class ACE_API AAcePlayerCharacter : public AAceBaseCharacter
@@ -26,6 +27,9 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
     USkeletalMeshComponent* ClientMesh;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
+    UAceInventoryComponent* InventoryComponent;
 
     float ADSAlpha;
 

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "AceBaseItem.h"
 #include "AceBaseWeapon.generated.h"
 
 class AAceSightAttachment;
@@ -54,7 +54,7 @@ struct FAttachmentsReferences
 };
 
 UCLASS()
-class ACE_API AAceBaseWeapon : public AActor
+class ACE_API AAceBaseWeapon : public AAceBaseItem
 {
 	GENERATED_BODY()
 	
@@ -74,6 +74,7 @@ public:
     virtual void AddRecoil();
 
     void ChangeClip();
+    void SpawnAttachment();
     
     FTransform GetSightTransform() const;
     FTransform GetGripTransform() const;
@@ -97,7 +98,6 @@ protected:
     float TraceMaxDistance = 15000.0f;
 
     void DecreaseAmmo();
-    void SpawnAttachment();
     void MakeMultiHit(TArray<FHitResult>& HitResult, const FVector& TraceStart, const FVector& TraceEnd);
 
     virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd, FVector& EditedDir) const;

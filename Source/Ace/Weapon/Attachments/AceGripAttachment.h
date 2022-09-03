@@ -6,12 +6,17 @@
 #include "Weapon/Attachments/AceBaseWeaponAttachment.h"
 #include "AceGripAttachment.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ACE_API AAceGripAttachment : public AAceBaseWeaponAttachment
 {
 	GENERATED_BODY()
+
+public:
+
+protected:
+    virtual void BeginPlay() override;
+
+private:
+    virtual void GetDefaultItemObject() override;
 	
 };

@@ -19,10 +19,11 @@ AAceBaseWeapon::AAceBaseWeapon()
 void AAceBaseWeapon::BeginPlay()
 {
     Super::BeginPlay();
-
+    
     CurrentAmmo = DefaultAmmo;
 
-    SpawnAttachment();
+    //if (!ItemObject) GetWorldTimerManager().SetTimerForNextTick(this, &AAceBaseWeapon::SpawnAttachment);
+    //SpawnAttachment();
 }
 
 void AAceBaseWeapon::StartFire()
@@ -40,26 +41,31 @@ void AAceBaseWeapon::MakeShot()
 void AAceBaseWeapon::SpawnAttachment()
 {
     if (!GetWorld() && !WeaponMesh) return;
-
+    
     const auto Sight = GetWorld()->SpawnActor<AAceSightAttachment>(StartAttachments.Sight);
     const auto Silencer = GetWorld()->SpawnActor<AAceSilencerAttachment>(StartAttachments.Silencer);
     const auto Grip = GetWorld()->SpawnActor<AAceGripAttachment>(StartAttachments.Grip);
 
+    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, GetOwner()->GetName());
+    
     if (Sight)
     {
         AttachAttachmentToSocket(Sight, WeaponMesh, "Sight");
+        Sight->SetOwner(GetOwner());
         CurrentAttachments.Sight = Sight;
     }
 
     if (Silencer)
     {
         AttachAttachmentToSocket(Silencer, WeaponMesh, "Silencer");
+        Silencer->SetOwner(GetOwner());
         CurrentAttachments.Silencer = Silencer;
     }
     
     if (Grip)
     {
         AttachAttachmentToSocket(Grip, WeaponMesh, "Grip");
+        Grip->SetOwner(GetOwner());
         CurrentAttachments.Grip = Grip;
     }
 }

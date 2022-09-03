@@ -5,6 +5,7 @@
 #include "Animation/AcePlayerAnimInstance.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
+#include "Objects/WeaponItemObject/AceARItemObject.h"
 
 AAceRifleWeapon::AAceRifleWeapon()
 {
@@ -18,6 +19,7 @@ void AAceRifleWeapon::BeginPlay()
     FOnTimelineVector Update;
     Update.BindUFunction(this, "TimelineUpdate");
     TimeLine.AddInterpVector(RecoilCurve, Update);
+    //if (!ItemObject) GetWorldTimerManager().SetTimerForNextTick(this, &AAceRifleWeapon::GetDefaultItemObject);
 }
 
 void AAceRifleWeapon::Tick(float DeltaSeconds)
@@ -25,7 +27,7 @@ void AAceRifleWeapon::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
     TimeLine.TickTimeline(DeltaSeconds);
     
-    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    const ACharacter* Character = Cast<ACharacter>(GetOwner());
     if(Character)
     {
         AnimInstance = Cast<UAcePlayerAnimInstance>(Character->GetMesh()->GetAnimInstance());   
@@ -96,7 +98,17 @@ bool AAceRifleWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd, FVect
     return true;
 }
 
-void AAceRifleWeapon::TimelineUpdate(FVector RecoilVector)
+void AAceRifleWeapon::GetDefaultItemObject()
+{
+    ItemObject = NewObject<UAceARItemObject>(this);
+    if (!ItemObject) return;
+    
+    ItemObject->ItemClass = AAceRifleWeapon::StaticClass();
+
+    Super::GetDefaultItemObject();
+}
+
+void AAceRifleWeapon::TimelineUpdate(const FVector RecoilVector) const
 {
     const auto Controller = Cast<APlayerController>(GetController());
     if (!Controller) return;
