@@ -1,6 +1,5 @@
 // Ace Game. All Rights Reserved.
 
-
 #include "Weapon/AceRifleWeapon.h"
 #include "Animation/AcePlayerAnimInstance.h"
 #include "Components/TimelineComponent.h"
@@ -102,8 +101,10 @@ void AAceRifleWeapon::GetDefaultItemObject()
 {
     ItemObject = NewObject<UAceARItemObject>(this);
     if (!ItemObject) return;
-    
-    ItemObject->ItemClass = AAceRifleWeapon::StaticClass();
+
+    ItemObject->SetClass(this->StaticClass());
+    ItemObject->SetIcon(Icon);
+    ItemObject->SetName(Name);
 
     Super::GetDefaultItemObject();
 }

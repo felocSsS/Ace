@@ -21,6 +21,11 @@ bool UAceInventoryComponent::AddItem(UAceBaseItemObject* ItemObject)
     return true;
 }
 
+void UAceInventoryComponent::BPGetAllItems(TArray<UAceBaseItemObject*>& ArrayItems) const
+{
+    ArrayItems = Items;
+}
+
 TArray<UAceBaseItemObject*> UAceInventoryComponent::GetAllItems() const
 {
     return Items;
@@ -41,9 +46,9 @@ void UAceInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
     
-    for (const auto item : Items)
+    /*for (const auto item : Items)
     {
         GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Black, item->GetName());
-    }
+    }*/
 }
 

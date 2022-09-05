@@ -45,8 +45,6 @@ void AAceBaseWeapon::SpawnAttachment()
     const auto Sight = GetWorld()->SpawnActor<AAceSightAttachment>(StartAttachments.Sight);
     const auto Silencer = GetWorld()->SpawnActor<AAceSilencerAttachment>(StartAttachments.Silencer);
     const auto Grip = GetWorld()->SpawnActor<AAceGripAttachment>(StartAttachments.Grip);
-
-    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, GetOwner()->GetName());
     
     if (Sight)
     {

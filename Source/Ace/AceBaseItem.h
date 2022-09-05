@@ -23,6 +23,13 @@ protected:
     virtual void GetDefaultItemObject();
     virtual void AddItemObjectToInventory();
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Info")
+    UTexture2D* Icon;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Info")
+    FText Name;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     UAceBaseItemObject* ItemObject;
     
 private:

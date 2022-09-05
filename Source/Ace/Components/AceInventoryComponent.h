@@ -18,6 +18,13 @@ public:
 
 public:
     bool AddItem(UAceBaseItemObject* ItemObject);
+
+    //test
+
+    UFUNCTION(BlueprintCallable)
+    void BPGetAllItems(TArray<UAceBaseItemObject*>& ArrayItems) const;
+    
+    //test
     
     TArray<UAceBaseItemObject*> GetAllItems() const;
     TArray<UAceBaseItemObject*> GetItemsOfClass(const TSubclassOf<UAceBaseItemObject> Class) const;
@@ -26,6 +33,12 @@ public:
     
 protected:
 	virtual void BeginPlay() override;
+    
+    UPROPERTY(EditDefaultsOnly, Category="Item Info")
+    UTexture* Icon;
+    
+    UPROPERTY(EditDefaultsOnly, Category="Item Info")
+    FName Name;
     
 private:
     TArray<UAceBaseItemObject*> Items;

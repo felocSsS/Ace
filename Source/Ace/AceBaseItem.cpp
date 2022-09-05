@@ -1,7 +1,6 @@
 // Ace Game. All Rights Reserved.
 
 #include "AceBaseItem.h"
-
 #include "Components/AceInventoryComponent.h"
 #include "Objects/AceBaseItemObject.h"
 #include "Player/AcePlayerCharacter.h"
@@ -14,7 +13,7 @@ AAceBaseItem::AAceBaseItem()
 void AAceBaseItem::BeginPlay()
 {
 	Super::BeginPlay();
-
+    
     if (!ItemObject) GetDefaultItemObject(); //GetWorldTimerManager().SetTimerForNextTick(this, &AAceBaseItem::GetDefaultItemObject);
 }
 
@@ -32,10 +31,5 @@ void AAceBaseItem::AddItemObjectToInventory()
         return;
     }
     
-
     Character->InventoryComponent->AddItem(ItemObject);
 }
-
-
-
-

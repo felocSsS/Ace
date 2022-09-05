@@ -14,7 +14,9 @@ void AAceSightAttachment::GetDefaultItemObject()
     ItemObject = NewObject<UAceSightAttachmentItemObject>(this);
     if (!ItemObject) return;
     
-    ItemObject->ItemClass = AAceSightAttachment::StaticClass();
+    ItemObject->SetClass(this->StaticClass());
+    ItemObject->SetIcon(Icon);
+    ItemObject->SetName(Name);
 
     Super::GetDefaultItemObject();
 }
