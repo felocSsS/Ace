@@ -9,9 +9,9 @@ AAceBaseCharacter::AAceBaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-    HealthComponent = CreateDefaultSubobject<UAceHealthComponent>(TEXT("Health Component"));
+    HealthComponent = CreateDefaultSubobject<UAceHealthComponent>("Health Component");
 
-    WeaponComponent = CreateDefaultSubobject<UAceWeaponComponent>(TEXT("Weapon Component"));
+    WeaponComponent = CreateDefaultSubobject<UAceWeaponComponent>("Weapon Component");
 }
 
 void AAceBaseCharacter::BeginPlay()

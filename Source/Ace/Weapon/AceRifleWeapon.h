@@ -47,5 +47,7 @@ private:
     virtual void GetDefaultItemObject() override;
     
     AController* GetController() const;
+
+    ACharacter* Character;
 };
 

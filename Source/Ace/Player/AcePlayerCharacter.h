@@ -6,10 +6,14 @@
 #include "Player/AceBaseCharacter.h"
 #include "AcePlayerCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInteractableItemChangeDelegate, bool, ShowWidget, FText, ItemName);
+
 class UCameraComponent;
 class UAcePlayerAnimInstance;
 class USkeletalMeshComponent;
 class UAceInventoryComponent;
+class UAceBaseItemObject;
+class AAceBaseInteractableItem;
 
 UCLASS()
 class ACE_API AAcePlayerCharacter : public AAceBaseCharacter
@@ -21,6 +25,7 @@ public:
 	
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+    virtual void Tick(float DeltaSeconds) override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
     UCameraComponent* CameraComponent;
@@ -30,6 +35,9 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
     UAceInventoryComponent* InventoryComponent;
+
+    UPROPERTY(BlueprintAssignable, Category="Delegates")
+    FOnInteractableItemChangeDelegate OnInteractableItemChange;
 
     float ADSAlpha;
 
@@ -49,4 +57,12 @@ private:
 	void MoveRight(float Value);
     void Aim();
     void ResetAim();
+    void TryFindInteractableItem();
+    void GetTraceData(FVector& TraceStart, FVector& TraceEnd);
+    void PickUpItem();
+    void OpenInventory();
+
+    bool ItemDirty;
+    
+    AAceBaseInteractableItem* Item;
 };

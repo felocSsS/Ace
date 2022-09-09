@@ -7,12 +7,14 @@
 #include "Attachments/AceGripAttachment.h"
 #include "Attachments/AceSightAttachment.h"
 #include "Attachments/AceSilencerAttachment.h"
+#include "Components/AceInventoryComponent.h"
+#include "Player/AcePlayerCharacter.h"
 
 AAceBaseWeapon::AAceBaseWeapon()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-    WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
+    WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
     WeaponMesh->SetupAttachment(RootComponent);
 }
 
@@ -38,9 +40,10 @@ void AAceBaseWeapon::MakeShot()
 {
 }
 
-void AAceBaseWeapon::SpawnAttachment()
+void AAceBaseWeapon::SpawnStartAttachment()
 {
-    if (!GetWorld() && !WeaponMesh) return;
+    AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
+    if (!GetWorld() && !WeaponMesh && !Character) return;
     
     const auto Sight = GetWorld()->SpawnActor<AAceSightAttachment>(StartAttachments.Sight);
     const auto Silencer = GetWorld()->SpawnActor<AAceSilencerAttachment>(StartAttachments.Silencer);
@@ -51,6 +54,7 @@ void AAceBaseWeapon::SpawnAttachment()
         AttachAttachmentToSocket(Sight, WeaponMesh, "Sight");
         Sight->SetOwner(GetOwner());
         CurrentAttachments.Sight = Sight;
+        Character->InventoryComponent->AddItem(Sight->GetItemObject());
     }
 
     if (Silencer)
@@ -58,6 +62,7 @@ void AAceBaseWeapon::SpawnAttachment()
         AttachAttachmentToSocket(Silencer, WeaponMesh, "Silencer");
         Silencer->SetOwner(GetOwner());
         CurrentAttachments.Silencer = Silencer;
+        Character->InventoryComponent->AddItem(Silencer->GetItemObject()); 
     }
     
     if (Grip)
@@ -65,6 +70,7 @@ void AAceBaseWeapon::SpawnAttachment()
         AttachAttachmentToSocket(Grip, WeaponMesh, "Grip");
         Grip->SetOwner(GetOwner());
         CurrentAttachments.Grip = Grip;
+        Character->InventoryComponent->AddItem(Grip->GetItemObject()); 
     }
 }
 

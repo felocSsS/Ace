@@ -18,7 +18,6 @@ void AAceRifleWeapon::BeginPlay()
     FOnTimelineVector Update;
     Update.BindUFunction(this, "TimelineUpdate");
     TimeLine.AddInterpVector(RecoilCurve, Update);
-    //if (!ItemObject) GetWorldTimerManager().SetTimerForNextTick(this, &AAceRifleWeapon::GetDefaultItemObject);
 }
 
 void AAceRifleWeapon::Tick(float DeltaSeconds)
@@ -26,9 +25,9 @@ void AAceRifleWeapon::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
     TimeLine.TickTimeline(DeltaSeconds);
     
-    const ACharacter* Character = Cast<ACharacter>(GetOwner());
-    if(Character)
+    if(!Character)
     {
+        Character = Cast<ACharacter>(GetOwner());
         AnimInstance = Cast<UAcePlayerAnimInstance>(Character->GetMesh()->GetAnimInstance());   
     }
 }
@@ -104,9 +103,7 @@ void AAceRifleWeapon::GetDefaultItemObject()
 
     ItemObject->SetClass(this->StaticClass());
     ItemObject->SetIcon(Icon);
-    ItemObject->SetName(Name);
-
-    Super::GetDefaultItemObject();
+    ItemObject->SetName(ItemName);
 }
 
 void AAceRifleWeapon::TimelineUpdate(const FVector RecoilVector) const

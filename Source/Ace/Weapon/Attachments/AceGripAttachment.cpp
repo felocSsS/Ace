@@ -15,7 +15,5 @@ void AAceGripAttachment::GetDefaultItemObject()
     
     ItemObject->SetClass(this->StaticClass());
     ItemObject->SetIcon(Icon);
-    ItemObject->SetName(Name);
-
-    Super::GetDefaultItemObject();
+    ItemObject->SetName(ItemName);
 }

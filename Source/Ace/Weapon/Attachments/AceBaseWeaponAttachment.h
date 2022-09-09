@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AceBaseItem.h"
+#include "Items/AceBaseItem.h"
 #include "AceBaseWeaponAttachment.generated.h"
 
 UCLASS()

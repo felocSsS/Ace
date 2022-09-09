@@ -73,8 +73,6 @@ void UAceHealthComponent::ApplyDamage(float Damage, AController* InstigatedBy)
     if (Damage <= 0.0f || IsDead() || !GetWorld()) return;
 
     SetHealth(Health - Damage, MaxHealth);
-
-    UE_LOG(LogTemp, Warning, TEXT("lol"));
     
     if (IsDead())
     {

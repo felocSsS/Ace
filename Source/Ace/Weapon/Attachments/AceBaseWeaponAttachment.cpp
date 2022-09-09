@@ -7,7 +7,7 @@ AAceBaseWeaponAttachment::AAceBaseWeaponAttachment()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-    AttachmentMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AttachmentMesh"));
+    AttachmentMesh = CreateDefaultSubobject<UStaticMeshComponent>("AttachmentMesh");
     AttachmentMesh->SetupAttachment(RootComponent);
 }
 

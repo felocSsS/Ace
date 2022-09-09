@@ -56,7 +56,7 @@ protected:
     bool CanFire() const;
     
 private:
-    void SpawnWeapons();
+    void SpawnStartWeapons();
     void ChangeClip();
     void AttachWeaponToSocket(AAceBaseWeapon* Weapon, USceneComponent* SceneComponent, const FName SocketName);
 

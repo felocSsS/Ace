@@ -9,7 +9,7 @@ AAceDevDamageActor::AAceDevDamageActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-    SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+    SceneComponent = CreateDefaultSubobject<USceneComponent>("SceneComponent");
     SetRootComponent(SceneComponent);
 }
 

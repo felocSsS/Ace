@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AceBaseItem.h"
+#include "Items/AceBaseItem.h"
 #include "AceBaseWeapon.generated.h"
 
 class AAceSightAttachment;
@@ -74,7 +74,7 @@ public:
     virtual void AddRecoil();
 
     void ChangeClip();
-    void SpawnAttachment();
+    void SpawnStartAttachment();
     
     FTransform GetSightTransform() const;
     FTransform GetGripTransform() const;

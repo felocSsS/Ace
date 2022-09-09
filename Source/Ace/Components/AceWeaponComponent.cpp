@@ -2,7 +2,10 @@
 
 
 #include "Components/AceWeaponComponent.h"
+
+#include "AceInventoryComponent.h"
 #include "GameFramework/Character.h"
+#include "Player/AcePlayerCharacter.h"
 #include "Weapon/AceBaseWeapon.h"
 
 UAceWeaponComponent::UAceWeaponComponent()
@@ -15,22 +18,23 @@ void UAceWeaponComponent::BeginPlay()
 	Super::BeginPlay();
 
     CurrentWeaponIndex = 0;
-    SpawnWeapons();
+    SpawnStartWeapons();
     EquipWeapon(CurrentWeaponIndex);
 }
 
-void UAceWeaponComponent::SpawnWeapons()
+void UAceWeaponComponent::SpawnStartWeapons()
 {
-    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
     if(!Character || !GetWorld()) return;
 
     for (auto Weapon : StartWeapons)
     {
         auto SpawnedWeapon = GetWorld()->SpawnActor<AAceBaseWeapon>(Weapon.WeaponClass);
         if(!SpawnedWeapon) return;
-
+        
         SpawnedWeapon->SetOwner(Character);
-        SpawnedWeapon->SpawnAttachment();
+        Character->InventoryComponent->AddItem(SpawnedWeapon->GetItemObject());
+        SpawnedWeapon->SpawnStartAttachment();
         Weapons.Add(SpawnedWeapon);
 
         AttachWeaponToSocket(SpawnedWeapon, Character->GetMesh(), "InventorySlotSocket");

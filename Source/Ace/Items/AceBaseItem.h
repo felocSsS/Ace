@@ -17,17 +17,18 @@ public:
 	AAceBaseItem();
 
 public:	
+    UAceBaseItemObject* GetItemObject() const;
+    FText GetItemName() const;
     
 protected:
 	virtual void BeginPlay() override;
     virtual void GetDefaultItemObject();
-    virtual void AddItemObjectToInventory();
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Info")
+    FText ItemName;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Info")
     UTexture2D* Icon;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Info")
-    FText Name;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     UAceBaseItemObject* ItemObject;

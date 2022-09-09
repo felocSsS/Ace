@@ -3,26 +3,29 @@
 #include "Player/AcePlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Animation/AcePlayerAnimInstance.h"
+#include "Blueprint/UserWidget.h"
 #include "Components/AceInventoryComponent.h"
 #include "Components/AceWeaponComponent.h"
+#include "GameFramework/GameModeBase.h"
+#include "Items/AceBaseInteractableItem.h"
 
 AAcePlayerCharacter::AAcePlayerCharacter()
 {
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(GetMesh(), "head");
     CameraComponent->bUsePawnControlRotation = true;
 
     GetMesh()->bVisibleInReflectionCaptures= true;
     GetMesh()->bCastHiddenShadow = true;
     
-    ClientMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ClientMesh"));
+    ClientMesh = CreateDefaultSubobject<USkeletalMeshComponent>("ClientMesh");
     ClientMesh->SetCastShadow(false);
     ClientMesh->bCastHiddenShadow = false;
     ClientMesh->bVisibleInReflectionCaptures = false;
     ClientMesh->SetTickGroup(ETickingGroup::TG_PostPhysics);
     ClientMesh->SetupAttachment(GetMesh());
 
-    InventoryComponent = CreateDefaultSubobject<UAceInventoryComponent>(TEXT("InventoryComponent"));
+    InventoryComponent = CreateDefaultSubobject<UAceInventoryComponent>("InventoryComponent");
 }
 
 void AAcePlayerCharacter::BeginPlay()
@@ -49,6 +52,75 @@ void AAcePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
     PlayerInputComponent->BindAction("Aim", IE_Released, this, &AAcePlayerCharacter::ResetAim);
     PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &UAceWeaponComponent::NextWeapon);
     PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &UAceWeaponComponent::Reload);
+    PlayerInputComponent->BindAction("PickUp", IE_Pressed, this, &AAcePlayerCharacter::PickUpItem);
+    PlayerInputComponent->BindAction("ToggleInventory", IE_Pressed, this, &AAcePlayerCharacter::OpenInventory);
+}
+
+void AAcePlayerCharacter::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+
+    TryFindInteractableItem();
+}
+
+void AAcePlayerCharacter::TryFindInteractableItem()
+{
+    if (!GetWorld()) return;
+
+    FHitResult HitResult;
+    FVector TraceStart, TraceEnd;
+    GetTraceData(TraceStart, TraceEnd);
+    
+    FCollisionObjectQueryParams CollisionObjectTypes;
+    CollisionObjectTypes.AddObjectTypesToQuery(ECollisionChannel::ECC_EngineTraceChannel3);
+    
+    GetWorld()->LineTraceSingleByObjectType(HitResult, TraceStart, TraceEnd, CollisionObjectTypes);
+    
+    if (HitResult.bBlockingHit)
+    {
+        if (Item != HitResult.GetActor())
+        {
+            Item = Cast<AAceBaseInteractableItem>(HitResult.GetActor());
+            ItemDirty = true;
+            OnInteractableItemChange.Broadcast(true, Item->GetItemName());
+        }
+    }
+    else
+    {
+        if (ItemDirty)
+        {
+            Item = nullptr;
+            ItemDirty = false;
+            OnInteractableItemChange.Broadcast(false, FText());
+        }
+    }
+}
+
+void AAcePlayerCharacter::GetTraceData(FVector& TraceStart, FVector& TraceEnd)
+{
+    const auto AceController = GetController<APlayerController>();
+    if (!AceController) return;
+    
+    FVector ViewLocation;
+    FRotator ViewRotation;
+    Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+    
+    TraceStart = ViewLocation;
+    const FVector ShootDirection = ViewRotation.Vector();
+    TraceEnd = TraceStart + ShootDirection * 150;
+}
+
+void AAcePlayerCharacter::PickUpItem()
+{
+    InventoryComponent->AddItem(Item->GetItemObject());
+    Item->Destroy();
+    Item = nullptr;
+    OnInteractableItemChange.Broadcast(false, FText());
+}
+
+void AAcePlayerCharacter::OpenInventory()
+{
+    
 }
 
 void AAcePlayerCharacter::MoveForward(float Value)
@@ -100,5 +172,3 @@ void AAcePlayerCharacter::ResetAim()
         AnimInstance->ShakingModifier = 1.0f;
     //CameraComponent->SetFieldOfView(90);
 }
-
-

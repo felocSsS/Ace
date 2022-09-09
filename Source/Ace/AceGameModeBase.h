@@ -6,9 +6,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "AceGameModeBase.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ACE_API AAceGameModeBase : public AGameModeBase
 {

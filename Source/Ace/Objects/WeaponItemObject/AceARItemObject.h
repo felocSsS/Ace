@@ -6,12 +6,11 @@
 #include "Objects/AceBaseItemObject.h"
 #include "AceARItemObject.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ACE_API UAceARItemObject : public UAceBaseItemObject
 {
 	GENERATED_BODY()
-	
+
+public:
+    
 };

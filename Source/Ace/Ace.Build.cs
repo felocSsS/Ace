@@ -16,7 +16,8 @@ public class Ace : ModuleRules
 			"Core",
 			"CoreUObject",
 			"Engine",
-			"InputCore"
+			"InputCore",
+			"UMG"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
