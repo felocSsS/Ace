@@ -13,7 +13,6 @@ AAceBaseInteractableItem::AAceBaseInteractableItem()
     CollisionBox = CreateDefaultSubobject<UBoxComponent>("CollisionBox");
     CollisionBox->SetupAttachment(ItemMesh);
     CollisionBox->SetCollisionObjectType(ECollisionChannel::ECC_EngineTraceChannel3);
-    
 }
 
 void AAceBaseInteractableItem::BeginPlay()
@@ -26,7 +25,7 @@ void AAceBaseInteractableItem::GetDefaultItemObject()
     ItemObject = NewObject<UAceARItemObject>(this);
     if (!ItemObject) return;
 
-    ItemObject->SetClass(ItemClass->StaticClass());
+    ItemObject->SetClass(SpawnClass);
     ItemObject->SetIcon(Icon);
     ItemObject->SetName(ItemName);
 }

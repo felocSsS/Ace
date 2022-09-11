@@ -27,11 +27,7 @@ public:
 protected:
     virtual void BeginPlay() override;
     virtual void GetDefaultItemObject() override;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Info")
-    TSubclassOf<AAceBaseWeapon> ItemClass;
     
 private:
-    
     
 };

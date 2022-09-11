@@ -13,7 +13,7 @@ void AAceGripAttachment::GetDefaultItemObject()
     ItemObject = NewObject<UAceGripAttachmentItemObject>(this);
     if (!ItemObject) return;
     
-    ItemObject->SetClass(this->StaticClass());
+    ItemObject->SetClass(SpawnClass);
     ItemObject->SetIcon(Icon);
     ItemObject->SetName(ItemName);
 }

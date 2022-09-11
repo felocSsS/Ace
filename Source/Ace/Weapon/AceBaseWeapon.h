@@ -66,7 +66,7 @@ public:
     USkeletalMeshComponent* WeaponMesh;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "Weapon")
-    FAmmoData DefaultAmmo {30, 4} ;
+    FAmmoData DefaultAmmo {30, 4};
     
     virtual void StartFire();
     virtual void StopFire();

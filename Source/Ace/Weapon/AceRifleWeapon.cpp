@@ -28,7 +28,8 @@ void AAceRifleWeapon::Tick(float DeltaSeconds)
     if(!Character)
     {
         Character = Cast<ACharacter>(GetOwner());
-        AnimInstance = Cast<UAcePlayerAnimInstance>(Character->GetMesh()->GetAnimInstance());   
+        if(Character)
+            AnimInstance = Cast<UAcePlayerAnimInstance>(Character->GetMesh()->GetAnimInstance());   
     }
 }
 
@@ -101,7 +102,7 @@ void AAceRifleWeapon::GetDefaultItemObject()
     ItemObject = NewObject<UAceARItemObject>(this);
     if (!ItemObject) return;
 
-    ItemObject->SetClass(this->StaticClass());
+    ItemObject->SetClass(SpawnClass);
     ItemObject->SetIcon(Icon);
     ItemObject->SetName(ItemName);
 }

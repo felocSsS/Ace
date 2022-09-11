@@ -7,6 +7,7 @@
 #include "AceBaseItem.generated.h"
 
 class UAceBaseItemObject;
+class AAceBaseWeapon;
 
 UCLASS()
 class ACE_API AAceBaseItem : public AActor
@@ -29,8 +30,10 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Info")
     UTexture2D* Icon;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "Info")
+    TSubclassOf<AAceBaseItem> SpawnClass;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     UAceBaseItemObject* ItemObject;
     
 private:

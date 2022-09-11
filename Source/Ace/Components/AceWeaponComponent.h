@@ -38,6 +38,8 @@ public:
     void StopFire();
     void Reload();
     virtual void NextWeapon();
+    void EquipWeapon(int32 WeaponIndex);
+    void AddWeapon(AAceBaseWeapon* Item, int32 AtIndex);
     
 protected:
 	virtual void BeginPlay() override;
@@ -47,8 +49,6 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
     TArray<AAceBaseWeapon*> Weapons;
-
-    void EquipWeapon(int32 WeaponIndex);
 
     int32 CurrentWeaponIndex;
 

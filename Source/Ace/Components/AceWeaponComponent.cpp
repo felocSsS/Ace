@@ -17,6 +17,8 @@ void UAceWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+    Weapons.SetNum(5);
+    
     CurrentWeaponIndex = 0;
     SpawnStartWeapons();
     EquipWeapon(CurrentWeaponIndex);
@@ -43,7 +45,7 @@ void UAceWeaponComponent::SpawnStartWeapons()
 
 void UAceWeaponComponent::EquipWeapon(int32 WeaponIndex)
 {
-    if (WeaponIndex < 0 || WeaponIndex >= Weapons.Num()) return;
+    if (WeaponIndex < 0 || !Weapons.IsValidIndex(WeaponIndex)) return;
 
     const ACharacter* Character = Cast<ACharacter>(GetOwner());
     if (!Character) return;
@@ -58,6 +60,13 @@ void UAceWeaponComponent::EquipWeapon(int32 WeaponIndex)
     CurrentWeaponChangedDelegate.Broadcast(CurrentWeapon);
 }
 
+void UAceWeaponComponent::AddWeapon(AAceBaseWeapon* Item, int32 AtIndex)
+{
+    if (!Item) return;
+
+    Weapons[AtIndex] = Item;
+}
+
 void UAceWeaponComponent::AttachWeaponToSocket(AAceBaseWeapon* Weapon, USceneComponent* SceneComponent,
                                                const FName SocketName)
 {
@@ -69,14 +78,14 @@ void UAceWeaponComponent::AttachWeaponToSocket(AAceBaseWeapon* Weapon, USceneCom
 
 void UAceWeaponComponent::StartFire()
 {
-    if (!CanFire()) return;
+    if (!CanFire() || !CurrentWeapon) return;
 
     CurrentWeapon->StartFire();
 }
 
 void UAceWeaponComponent::StopFire()
 {
-    if (!CanFire()) return;
+    if (!CanFire() || !CurrentWeapon) return;
 
     CurrentWeapon->StopFire();
 }

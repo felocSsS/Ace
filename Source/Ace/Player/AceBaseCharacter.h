@@ -20,6 +20,9 @@ public:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
+    UAceWeaponComponent* WeaponComponent;
+    
     UFUNCTION(BlueprintCallable, Category="Movement")
     float GetCharacterVelocity() const;
 
@@ -28,9 +31,6 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
-	UAceWeaponComponent* WeaponComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
     UAceHealthComponent* HealthComponent;
