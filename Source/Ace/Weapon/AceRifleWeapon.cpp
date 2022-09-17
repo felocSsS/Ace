@@ -4,6 +4,7 @@
 #include "Animation/AcePlayerAnimInstance.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
+#include "Kismet/KismetStringLibrary.h"
 #include "Objects/WeaponItemObject/AceARItemObject.h"
 
 AAceRifleWeapon::AAceRifleWeapon()
@@ -99,12 +100,17 @@ bool AAceRifleWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd, FVect
 
 void AAceRifleWeapon::GetDefaultItemObject()
 {
-    ItemObject = NewObject<UAceARItemObject>(this);
-    if (!ItemObject) return;
+    auto NewItemObject = NewObject<UAceARItemObject>(this);
+    if (!NewItemObject) return;
 
-    ItemObject->SetClass(SpawnClass);
-    ItemObject->SetIcon(Icon);
-    ItemObject->SetName(ItemName);
+    NewItemObject->SetClass(SpawnClass);
+    NewItemObject->SetIcon(Icon);
+    NewItemObject->SetName(ItemName);
+    NewItemObject->IsASightAvailable = IsASightAvailable;
+    NewItemObject->IsAGripAvailable = IsAGripAvailable;
+    NewItemObject->IsASilencerAvailable = IsASilencerAvailable;
+    
+    ItemObject = NewItemObject;
 }
 
 void AAceRifleWeapon::TimelineUpdate(const FVector RecoilVector) const

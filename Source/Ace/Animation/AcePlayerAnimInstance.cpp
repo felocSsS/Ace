@@ -25,6 +25,7 @@ void UAcePlayerAnimInstance::NativeBeginPlay()
     if (!WeaponComponent) return;
 
     WeaponComponent->CurrentWeaponChangedDelegate.AddDynamic(this, &UAcePlayerAnimInstance::WeaponChanged);
+    WeaponComponent->UpdateWeaponInfoDelegate.AddDynamic(this, &UAcePlayerAnimInstance::UpdateInfo);
     OldTurnRotation = Character->GetControlRotation();
     
     if (!MoveInSidesCurve) return;
@@ -45,7 +46,7 @@ void UAcePlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     SetWalkWeaponSway(DeltaSeconds);
     SetMoveInSides(DeltaSeconds);
     SetTurnWeaponSway(DeltaSeconds);
-    GetLeftHandTransform();
+    //GetLeftHandTransform();
     TimeLine.TickTimeline(DeltaSeconds);
 
     InterpRecoil(DeltaSeconds);
@@ -175,6 +176,13 @@ void UAcePlayerAnimInstance::WeaponChanged(AAceBaseWeapon* NewWeapon)
 {
     CurrentWeapon = NewWeapon;
     GetRelativeRightHandTransform();
+    GetLeftHandTransform();
+}
+
+void UAcePlayerAnimInstance::UpdateInfo()
+{
+    GetRelativeRightHandTransform();
+    GetLeftHandTransform();
 }
 
 void UAcePlayerAnimInstance::GetLeftHandTransform()

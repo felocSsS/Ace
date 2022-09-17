@@ -12,5 +12,12 @@ class ACE_API UAceARItemObject : public UAceBaseItemObject
 	GENERATED_BODY()
 
 public:
+    bool IsASightAvailable;
+    bool IsASilencerAvailable;
+    bool IsAGripAvailable;
+    
+protected:
+    
+private:
     
 };

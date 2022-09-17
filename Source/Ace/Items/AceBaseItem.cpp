@@ -3,7 +3,6 @@
 #include "AceBaseItem.h"
 #include "Objects/AceBaseItemObject.h"
 #include "Player/AcePlayerCharacter.h"
-#include "Weapon/AceBaseWeapon.h"
 
 AAceBaseItem::AAceBaseItem()
 {

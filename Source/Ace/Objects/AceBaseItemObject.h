@@ -12,19 +12,6 @@ class ACE_API UAceBaseItemObject : public UObject
 	GENERATED_BODY()
 
 public:
-    //test
-
-    UFUNCTION(BlueprintCallable)
-    void BPGetIcon(UTexture2D*& BPIcon);
-    
-    UFUNCTION(BlueprintCallable)
-    void BPGetName(FText& BPName);
-    
-    UFUNCTION(BlueprintCallable)
-    void BPGetClass(TSubclassOf<AAceBaseItem>& Class);
-    
-    //test
-    
     UTexture2D* GetObjectIcon() const;
     FText GetObjectName() const;
     TSubclassOf<AAceBaseItem> GetObjectClass() const;
@@ -38,6 +25,15 @@ protected:
     FText Name;
     
     TSubclassOf<AAceBaseItem> ItemClass;
+
+    UFUNCTION(BlueprintCallable)
+    void BPGetIcon(UTexture2D*& BPIcon);
+    
+    UFUNCTION(BlueprintCallable)
+    void BPGetName(FText& BPName);
+    
+    UFUNCTION(BlueprintCallable)
+    void BPGetClass(TSubclassOf<AAceBaseItem>& Class);
     
 private:
     

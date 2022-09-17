@@ -7,8 +7,10 @@
 #include "AceWeaponComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCurrentWeaponChangedDelegate, class AAceBaseWeapon*, CurrentWeapon);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUpdateWeaponInfoDelegate);
 
 class AAceBaseWeapon;
+class AAceBaseItem;
 
 USTRUCT(BlueprintType)
 struct FWeaponData
@@ -28,22 +30,27 @@ public:
 	UAceWeaponComponent();
 
 public:
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Weapon")
-    AAceBaseWeapon* CurrentWeapon;
-
     UPROPERTY(BlueprintAssignable, Category="Weapon")
     FCurrentWeaponChangedDelegate CurrentWeaponChangedDelegate;
+
+    UPROPERTY(BlueprintAssignable, Category="Weapon")
+    FUpdateWeaponInfoDelegate UpdateWeaponInfoDelegate;
 
     void StartFire();
     void StopFire();
     void Reload();
     virtual void NextWeapon();
     void EquipWeapon(int32 WeaponIndex);
-    void AddWeapon(AAceBaseWeapon* Item, int32 AtIndex);
+    void AddWeapon(TSubclassOf<AAceBaseItem> Item, int32 AtIndex);
+    void UpdateWeaponInfo() const { return UpdateWeaponInfoDelegate.Broadcast(); } 
+    AAceBaseWeapon* GetWeaponAtIndex(int32 Index);
     
 protected:
 	virtual void BeginPlay() override;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Weapon")
+    AAceBaseWeapon* CurrentWeapon;
+    
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
     TArray<FWeaponData> StartWeapons;
 

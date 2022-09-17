@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AcePlayerCharacter.h"
+#include "Inventory/UI/AceInventoryWidget.h"
 
 void AAceGameHUD::BeginPlay()
 {
@@ -12,10 +13,22 @@ void AAceGameHUD::BeginPlay()
 
     if (!GetWorld()) return;
      
-    const auto Player = Cast<AAcePlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
-    Player->OnInteractableItemChange.AddDynamic(this, &AAceGameHUD::OnInteractableItemChange);
+    Character = Cast<AAcePlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+    CharacterContoller = Cast<APlayerController>(Character->GetController());
+    if (!Character) return;
 
-    PickUpMessageWidget = CreateWidget<UAcePickUpMessageWidget>(GetWorld(), PickUpMessageWidgetClass);
+    if (InventoryWidgetClass)
+    {
+        InventoryWidget = CreateWidget<UAceInventoryWidget>(GetWorld(), InventoryWidgetClass);
+        InventoryWidget->SetOwningPlayer(CharacterContoller);   
+    }
+    
+    if (PickUpMessageWidgetClass)
+    {
+        Character->OnInteractableItemChange.AddDynamic(this, &AAceGameHUD::OnInteractableItemChange);
+        PickUpMessageWidget = CreateWidget<UAcePickUpMessageWidget>(GetWorld(), PickUpMessageWidgetClass);
+        PickUpMessageWidget->SetOwningPlayer(CharacterContoller);
+    }   
 }
 
 void AAceGameHUD::OnInteractableItemChange(bool ShowWidget, FText ItemName)
@@ -23,4 +36,20 @@ void AAceGameHUD::OnInteractableItemChange(bool ShowWidget, FText ItemName)
     if (!PickUpMessageWidget) return;
     ShowWidget ? PickUpMessageWidget->AddToViewport() : PickUpMessageWidget->RemoveFromViewport();
     ShowWidget ? PickUpMessageWidget->SetMessageText(ItemName) : PickUpMessageWidget->SetMessageText(FText());
+}
+
+void AAceGameHUD::ToggleInventory()
+{
+    if (InventoryWidget->IsInViewport())
+    {
+        InventoryWidget->RemoveFromViewport();
+        CharacterContoller->SetInputMode(FInputModeGameOnly());
+        CharacterContoller->bShowMouseCursor = false;
+    }
+    else
+    {
+        InventoryWidget->AddToViewport();
+        CharacterContoller->SetInputMode(FInputModeGameAndUI());
+        CharacterContoller->bShowMouseCursor = true;
+    }
 }

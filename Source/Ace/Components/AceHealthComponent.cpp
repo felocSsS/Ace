@@ -59,7 +59,6 @@ void UAceHealthComponent::OnTakePointDamege(AActor* DamagedActor, float Damage, 
 {
     const float FinalDamage = Damage;
     ApplyDamage(Damage, InstigatedBy);
-    
 }
 
 void UAceHealthComponent::OnRadialDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,

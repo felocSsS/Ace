@@ -24,32 +24,14 @@ struct FAmmoData
 };
 
 USTRUCT(BlueprintType)
-struct FAttachment
-{
-    GENERATED_USTRUCT_BODY()
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment")
-    TSubclassOf<AAceSightAttachment> Sight;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment")
-    TSubclassOf<AAceSilencerAttachment> Silencer;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment")
-    TSubclassOf<AAceGripAttachment> Grip;
-};
-
-USTRUCT(BlueprintType)
 struct FAttachmentsReferences
 {
     GENERATED_USTRUCT_BODY()
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment")
+    
     AAceSightAttachment* Sight;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment")
+    
     AAceSilencerAttachment* Silencer;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment")
+    
     AAceGripAttachment* Grip;
 };
 
@@ -75,6 +57,7 @@ public:
 
     void ChangeClip();
     void SpawnStartAttachment();
+    void SpawnAttachment(TSubclassOf<AAceBaseItem> Class, FName SocketName);
     
     FTransform GetSightTransform() const;
     FTransform GetGripTransform() const;
@@ -88,9 +71,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "Attachment")
-    FAttachment StartAttachments;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment|StartAttachment", meta = (EditCondition = "!IsASightAvailable"))
+    TSubclassOf<AAceSightAttachment> Sight;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment|StartAttachment", meta = (EditCondition = "!IsASilencerAvailable"))
+    TSubclassOf<AAceSilencerAttachment> Silencer;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment|StartAttachment", meta = (EditCondition = "!IsAGripAvailable"))
+    TSubclassOf<AAceGripAttachment> Grip;
+    
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Attachment")
     FAttachmentsReferences CurrentAttachments;
     
@@ -104,8 +93,18 @@ protected:
     bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
     bool IsClipEmpty() const;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attachment")
+    bool IsASightAvailable;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attachment")
+    bool IsASilencerAvailable;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attachment")
+    bool IsAGripAvailable;
+    
     FAmmoData CurrentAmmo;
     
 private:
     void AttachAttachmentToSocket(AAceBaseWeaponAttachment* Attachment, USceneComponent* SceneComponent, const FName SocketName);
+    friend class AAceBaseInteractableItem; 
 };

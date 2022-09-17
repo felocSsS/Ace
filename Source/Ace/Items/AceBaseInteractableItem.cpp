@@ -22,10 +22,16 @@ void AAceBaseInteractableItem::BeginPlay()
 
 void AAceBaseInteractableItem::GetDefaultItemObject()
 {
-    ItemObject = NewObject<UAceARItemObject>(this);
-    if (!ItemObject) return;
+    const auto NewItemObject = NewObject<UAceARItemObject>(this);
+    if (!NewItemObject) return;
 
-    ItemObject->SetClass(SpawnClass);
-    ItemObject->SetIcon(Icon);
-    ItemObject->SetName(ItemName);
+    NewItemObject->SetClass(SpawnClass);
+    NewItemObject->SetIcon(Icon);
+    NewItemObject->SetName(ItemName);
+    const auto WeaponClass = Cast<AAceBaseWeapon>(SpawnClass->ClassDefaultObject);
+    NewItemObject->IsASightAvailable = WeaponClass->IsASightAvailable;
+    NewItemObject->IsASilencerAvailable = WeaponClass->IsASilencerAvailable;
+    NewItemObject->IsAGripAvailable = WeaponClass->IsAGripAvailable;
+
+    ItemObject = NewItemObject;
 }

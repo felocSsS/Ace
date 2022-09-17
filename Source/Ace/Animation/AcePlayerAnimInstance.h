@@ -39,6 +39,9 @@ protected:
     UFUNCTION()
     virtual void WeaponChanged(AAceBaseWeapon* NewWeapon);
 
+    UFUNCTION()
+    void UpdateInfo();
+
     UPROPERTY(BlueprintReadOnly, Category="Character")
     AAcePlayerCharacter* Character;
     

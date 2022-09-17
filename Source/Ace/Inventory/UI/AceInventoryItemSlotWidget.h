@@ -17,6 +17,8 @@ class ACE_API UAceInventoryItemSlotWidget : public UUserWidget, public IUserObje
 	GENERATED_BODY()
     
 public:
+    
+protected:
     UPROPERTY(meta=(BindWidget))
     UImage* ItemImage;
 
@@ -26,7 +28,6 @@ public:
     UPROPERTY(meta=(BindWidget))
     UTextBlock* ItemCount;
     
-protected:
     virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
     virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
     virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;

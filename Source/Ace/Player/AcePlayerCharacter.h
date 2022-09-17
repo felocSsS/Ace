@@ -14,6 +14,7 @@ class USkeletalMeshComponent;
 class UAceInventoryComponent;
 class UAceBaseItemObject;
 class AAceBaseInteractableItem;
+class AAceGameHUD;
 
 UCLASS()
 class ACE_API AAcePlayerCharacter : public AAceBaseCharacter
@@ -65,4 +66,5 @@ private:
     bool ItemDirty;
     
     AAceBaseInteractableItem* Item;
+    AAceGameHUD* GameHUD;
 };

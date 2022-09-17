@@ -8,6 +8,7 @@
 #include "Components/AceWeaponComponent.h"
 #include "GameFramework/GameModeBase.h"
 #include "Items/AceBaseInteractableItem.h"
+#include "UI/AceGameHUD.h"
 
 AAcePlayerCharacter::AAcePlayerCharacter()
 {
@@ -36,6 +37,7 @@ void AAcePlayerCharacter::BeginPlay()
     ADSAlpha = 0.0f;
     ClientMesh->HideBoneByName("neck_01", PBO_None);
     GetMesh()->SetVisibility(false);
+    GameHUD = Cast<AAceGameHUD>(Cast<APlayerController>(GetController())->GetHUD());
 }
 
 void AAcePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -121,7 +123,7 @@ void AAcePlayerCharacter::PickUpItem()
 
 void AAcePlayerCharacter::OpenInventory()
 {
-    
+    GameHUD->ToggleInventory();
 }
 
 void AAcePlayerCharacter::MoveForward(float Value)

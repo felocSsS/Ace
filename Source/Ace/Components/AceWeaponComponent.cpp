@@ -2,7 +2,7 @@
 
 
 #include "Components/AceWeaponComponent.h"
-
+#include "Items/AceBaseItem.h"
 #include "AceInventoryComponent.h"
 #include "GameFramework/Character.h"
 #include "Player/AcePlayerCharacter.h"
@@ -17,7 +17,7 @@ void UAceWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-    Weapons.SetNum(5);
+    //Weapons.SetNum(2);
     
     CurrentWeaponIndex = 0;
     SpawnStartWeapons();
@@ -54,17 +54,42 @@ void UAceWeaponComponent::EquipWeapon(int32 WeaponIndex)
     {
         AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), "InventorySlotSocket");
     }
-    const AAceBaseWeapon* OldWeapon = CurrentWeapon;
     CurrentWeapon = Weapons[WeaponIndex];
     AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), "RightHandSocket");
     CurrentWeaponChangedDelegate.Broadcast(CurrentWeapon);
 }
 
-void UAceWeaponComponent::AddWeapon(AAceBaseWeapon* Item, int32 AtIndex)
+void UAceWeaponComponent::AddWeapon(TSubclassOf<AAceBaseItem> Item, int32 AtIndex)
 {
-    if (!Item) return;
+    if (!Item || !GetWorld()) return;
 
-    Weapons[AtIndex] = Item;
+    AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
+    if (!Character) return;
+    
+    const auto Weapon = GetWorld()->SpawnActor<AAceBaseWeapon>(Item);
+    if (!Weapon) return;
+
+    Weapon->SetOwner(Character);
+    
+    if (Weapons.IsValidIndex(AtIndex))
+        Weapons[AtIndex] = Weapon;
+    else
+    {
+        Weapons.SetNum(Weapons.Num() +1 );
+        Weapons[AtIndex] = Weapon;
+    }
+
+    EquipWeapon(AtIndex);
+}
+
+AAceBaseWeapon* UAceWeaponComponent::GetWeaponAtIndex(int32 Index)
+{
+    if (Weapons.IsValidIndex(Index))
+    {
+        return Weapons[Index];
+    }
+
+    return nullptr;
 }
 
 void UAceWeaponComponent::AttachWeaponToSocket(AAceBaseWeapon* Weapon, USceneComponent* SceneComponent,
@@ -108,7 +133,10 @@ void UAceWeaponComponent::NextWeapon()
     if (!CanEquip()) return;
 
     CurrentWeaponIndex = (CurrentWeaponIndex + 1 ) % Weapons.Num();
-    EquipWeapon(CurrentWeaponIndex);
+    if (Weapons.IsValidIndex(CurrentWeaponIndex))
+    {
+        EquipWeapon(CurrentWeaponIndex);   
+    }
 }
 
 bool UAceWeaponComponent::CanEquip() const
