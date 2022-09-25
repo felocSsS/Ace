@@ -7,7 +7,6 @@
 #include "Components/TextBlock.h"
 #include "Objects/WeaponItemObject/AceARItemObject.h"
 #include "Player/AcePlayerCharacter.h"
-#include "Weapon/AceBaseWeapon.h"
 #include "AceInventoryAttachmentSlotWidget.h"
 
 void UAceInventoryWeaponSlotWidget::NativeOnInitialized()
@@ -35,12 +34,13 @@ bool UAceInventoryWeaponSlotWidget::NativeOnDrop(const FGeometry& InGeometry, co
     
     ItemImage->SetBrushFromTexture(Payload->GetObjectIcon());
     ItemImage->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-    ItemName->SetText(Payload->GetObjectName());
+    /*ItemName->SetText(Payload->GetObjectName());*/
     
     !Payload->IsASightAvailable ? SightSlot->SetVisibility(ESlateVisibility::Visible) : SightSlot->SetVisibility(ESlateVisibility::Collapsed); 
     !Payload->IsAGripAvailable ? GripSlot->SetVisibility(ESlateVisibility::Visible) : GripSlot->SetVisibility(ESlateVisibility::Collapsed); 
-    !Payload->IsASilencerAvailable ? SilencerSlot->SetVisibility(ESlateVisibility::Visible) : SilencerSlot->SetVisibility(ESlateVisibility::Collapsed); 
-    
+    !Payload->IsASilencerAvailable ? SilencerSlot->SetVisibility(ESlateVisibility::Visible) : SilencerSlot->SetVisibility(ESlateVisibility::Collapsed);
+
+    ItemObject = Payload;
     
     Character->WeaponComponent->AddWeapon(Payload->GetObjectClass(), IndexOfSlot);
 

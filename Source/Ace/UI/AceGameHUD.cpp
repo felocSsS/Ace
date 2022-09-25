@@ -15,11 +15,11 @@ void AAceGameHUD::BeginPlay()
      
     Character = Cast<AAcePlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
     CharacterContoller = Cast<APlayerController>(Character->GetController());
-    if (!Character) return;
+    if (!Character || !CharacterContoller) return;
 
     if (InventoryWidgetClass)
     {
-        InventoryWidget = CreateWidget<UAceInventoryWidget>(GetWorld(), InventoryWidgetClass);
+        InventoryWidget = CreateWidget</*UAceInventoryWidget*/UUserWidget>(GetWorld(), InventoryWidgetClass);
         InventoryWidget->SetOwningPlayer(CharacterContoller);   
     }
     
@@ -34,13 +34,25 @@ void AAceGameHUD::BeginPlay()
 void AAceGameHUD::OnInteractableItemChange(bool ShowWidget, FText ItemName)
 {
     if (!PickUpMessageWidget) return;
-    ShowWidget ? PickUpMessageWidget->AddToViewport() : PickUpMessageWidget->RemoveFromViewport();
-    ShowWidget ? PickUpMessageWidget->SetMessageText(ItemName) : PickUpMessageWidget->SetMessageText(FText());
+    //ShowWidget ? PickUpMessageWidget->AddToViewport() : PickUpMessageWidget->RemoveFromViewport();
+    //ShowWidget ? PickUpMessageWidget->SetMessageText(ItemName) : PickUpMessageWidget->SetMessageText(FText());
+    if (ShowWidget)
+    {
+        PickUpMessageWidget->SetMessageText(ItemName);
+        if (!PickUpMessageWidget->IsInViewport())
+            PickUpMessageWidget->AddToViewport();
+    }
+    else
+    {
+        PickUpMessageWidget->SetMessageText(FText());
+        if (PickUpMessageWidget->IsInViewport())
+            PickUpMessageWidget->RemoveFromViewport();
+    }
 }
 
 void AAceGameHUD::ToggleInventory()
 {
-    if (InventoryWidget->IsInViewport())
+    if (InventoryWidget->IsInViewport() && CharacterContoller)
     {
         InventoryWidget->RemoveFromViewport();
         CharacterContoller->SetInputMode(FInputModeGameOnly());

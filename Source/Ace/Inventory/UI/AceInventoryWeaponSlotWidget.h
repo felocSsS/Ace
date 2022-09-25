@@ -9,6 +9,7 @@
 class UImage;
 class UTextBlock;
 class UAceInventoryAttachmentSlotWidget;
+class UAceBaseItemObject;
 
 UCLASS()
 class ACE_API UAceInventoryWeaponSlotWidget : public UUserWidget
@@ -21,8 +22,8 @@ protected:
     UPROPERTY(meta=(BindWidget))
     UImage* ItemImage;
 
-    UPROPERTY(meta=(BindWidget))
-    UTextBlock* ItemName;
+    /*UPROPERTY(meta=(BindWidget))
+    UTextBlock* ItemName;*/
 
     UPROPERTY(meta=(BindWidget))
     UAceInventoryAttachmentSlotWidget* SightSlot;
@@ -38,5 +39,7 @@ protected:
 
     UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Settings")
     int32 IndexOfSlot;
+
+    UAceBaseItemObject* ItemObject;
 private:	
 };

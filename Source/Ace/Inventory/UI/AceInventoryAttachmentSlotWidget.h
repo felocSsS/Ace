@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Weapon/Attachments/AceBaseWeaponAttachment.h"
 #include "AceInventoryAttachmentSlotWidget.generated.h"
 
 class UImage;
@@ -22,11 +23,13 @@ protected:
     UImage* ItemImage;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Info")
-    TSubclassOf<UAceBaseItemObject> ItemClassOfThisSlot;
+    EAttachmentType SlotAttachmentType;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Info")
     FName SocketName;
     
     virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+
+    UAceBaseItemObject* ItemObject;
 private:
 };

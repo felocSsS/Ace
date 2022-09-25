@@ -17,6 +17,7 @@ class ACE_API AAceGameHUD : public AHUD
 
 public:
     void ToggleInventory();
+    
 protected:
     virtual void BeginPlay() override;
     
@@ -24,7 +25,7 @@ protected:
     TSubclassOf<UUserWidget> PickUpMessageWidgetClass;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-    TSubclassOf<UUserWidget> InventoryWidgetClass;
+    TSubclassOf<UUserWidget/*UAceInventoryWidget*/> InventoryWidgetClass;
 
     UAcePickUpMessageWidget* PickUpMessageWidget;
 
@@ -32,7 +33,7 @@ protected:
     void OnInteractableItemChange(bool ShowWidget, FText ItemName);
     
 private:
-    UAceInventoryWidget* InventoryWidget;
+    UUserWidget/*UAceInventoryWidget*/* InventoryWidget;
     AAcePlayerCharacter* Character;
     APlayerController* CharacterContoller;
 };

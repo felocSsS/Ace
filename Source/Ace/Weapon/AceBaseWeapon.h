@@ -6,9 +6,6 @@
 #include "Items/AceBaseItem.h"
 #include "AceBaseWeapon.generated.h"
 
-class AAceSightAttachment;
-class AAceSilencerAttachment;
-class AAceGripAttachment;
 class AAceBaseWeaponAttachment;
 
 USTRUCT(BlueprintType)
@@ -28,11 +25,11 @@ struct FAttachmentsReferences
 {
     GENERATED_USTRUCT_BODY()
     
-    AAceSightAttachment* Sight;
+    AAceBaseWeaponAttachment* Sight;
     
-    AAceSilencerAttachment* Silencer;
+    AAceBaseWeaponAttachment* Silencer;
     
-    AAceGripAttachment* Grip;
+    AAceBaseWeaponAttachment* Grip;
 };
 
 UCLASS()
@@ -72,13 +69,13 @@ protected:
 	virtual void BeginPlay() override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment|StartAttachment", meta = (EditCondition = "!IsASightAvailable"))
-    TSubclassOf<AAceSightAttachment> Sight;
+    TSubclassOf<AAceBaseWeaponAttachment> Sight;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment|StartAttachment", meta = (EditCondition = "!IsASilencerAvailable"))
-    TSubclassOf<AAceSilencerAttachment> Silencer;
+    TSubclassOf<AAceBaseWeaponAttachment> Silencer;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment|StartAttachment", meta = (EditCondition = "!IsAGripAvailable"))
-    TSubclassOf<AAceGripAttachment> Grip;
+    TSubclassOf<AAceBaseWeaponAttachment> Grip;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Attachment")
     FAttachmentsReferences CurrentAttachments;

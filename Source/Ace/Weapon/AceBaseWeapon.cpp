@@ -4,9 +4,6 @@
 #include "Weapon/AceBaseWeapon.h"
 #include "Player/AceBaseCharacter.h"
 #include "Attachments/AceBaseWeaponAttachment.h"
-#include "Attachments/AceGripAttachment.h"
-#include "Attachments/AceSightAttachment.h"
-#include "Attachments/AceSilencerAttachment.h"
 #include "Components/AceInventoryComponent.h"
 #include "Components/AceWeaponComponent.h"
 #include "Player/AcePlayerCharacter.h"
@@ -24,9 +21,7 @@ void AAceBaseWeapon::BeginPlay()
     Super::BeginPlay();
     
     CurrentAmmo = DefaultAmmo;
-
-    //if (!ItemObject) GetWorldTimerManager().SetTimerForNextTick(this, &AAceBaseWeapon::SpawnAttachment);
-    //SpawnAttachment();
+    
 }
 
 void AAceBaseWeapon::StartFire()
@@ -54,7 +49,7 @@ void AAceBaseWeapon::SpawnStartAttachment()
     {
         AttachAttachmentToSocket(SpawnedSight, WeaponMesh, "Sight");
         SpawnedSight->SetOwner(GetOwner());
-        CurrentAttachments.Sight = Cast<AAceSightAttachment>(SpawnedSight);
+        CurrentAttachments.Sight = Cast<AAceBaseWeaponAttachment>(SpawnedSight);
         Character->InventoryComponent->AddItem(SpawnedSight->GetItemObject());
     }
 
@@ -62,7 +57,7 @@ void AAceBaseWeapon::SpawnStartAttachment()
     {
         AttachAttachmentToSocket(SpawnedSilencer, WeaponMesh, "Silencer");
         SpawnedSilencer->SetOwner(GetOwner());
-        CurrentAttachments.Silencer = Cast<AAceSilencerAttachment>(SpawnedSilencer);
+        CurrentAttachments.Silencer = Cast<AAceBaseWeaponAttachment>(SpawnedSilencer);
         Character->InventoryComponent->AddItem(SpawnedSilencer->GetItemObject()); 
     }
     
@@ -70,7 +65,7 @@ void AAceBaseWeapon::SpawnStartAttachment()
     {
         AttachAttachmentToSocket(SpawnedGrip, WeaponMesh, "Grip");
         SpawnedGrip->SetOwner(GetOwner());
-        CurrentAttachments.Grip = Cast<AAceGripAttachment>(SpawnedGrip);
+        CurrentAttachments.Grip = Cast<AAceBaseWeaponAttachment>(SpawnedGrip);
         Character->InventoryComponent->AddItem(SpawnedGrip->GetItemObject()); 
     }
 }
@@ -86,14 +81,14 @@ void AAceBaseWeapon::SpawnAttachment(TSubclassOf<AAceBaseItem> Class, FName Sock
     AttachAttachmentToSocket(Attachement, WeaponMesh, SocketName);
     Attachement->SetOwner(GetOwner());
 
-    if (Cast<AAceSightAttachment>(Attachement))
-        CurrentAttachments.Sight = Cast<AAceSightAttachment>(Attachement);
+    if (Attachement->AttachmentType == EAttachmentType::Sight)
+        CurrentAttachments.Sight = Attachement;
 
-    if (Cast<AAceGripAttachment>(Attachement))
-        CurrentAttachments.Grip = Cast<AAceGripAttachment>(Attachement);
+    if (Attachement->AttachmentType == EAttachmentType::Grip)
+        CurrentAttachments.Grip = Attachement;
 
-    if (Cast<AAceSilencerAttachment>(Attachement))
-        CurrentAttachments.Silencer = Cast<AAceSilencerAttachment>(Attachement);
+    if (Attachement->AttachmentType == EAttachmentType::Silencer)
+        CurrentAttachments.Silencer = Attachement;
 
     Character->WeaponComponent->UpdateWeaponInfo();
 }

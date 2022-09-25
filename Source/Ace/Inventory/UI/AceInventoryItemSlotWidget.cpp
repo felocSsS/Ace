@@ -4,13 +4,13 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Objects/AceBaseItemObject.h"
 #include "Components/Image.h"
-#include "Components/TextBlock.h"
 
-void UAceInventoryItemSlotWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
+void UAceInventoryItemSlotWidget::OnItemSpawned(UAceBaseItemObject* Item)
 {
-    ItemObject = Cast<UAceBaseItemObject>(ListItemObject);
-    ItemImage->SetBrushFromTexture(ItemObject->GetObjectIcon());
-    ItemName->SetText(ItemObject->GetObjectName());
+    if (!Item) return;
+    
+    ItemObject = Item;
+    ItemImage->SetBrushFromTexture(Item->GetObjectIcon());
 }
 
 FReply UAceInventoryItemSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
@@ -26,7 +26,7 @@ void UAceInventoryItemSlotWidget::NativeOnDragDetected(const FGeometry& InGeomet
     UDragDropOperation*& OutOperation)
 {
     Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
-    
+
     const auto DragOperation = UWidgetBlueprintLibrary::CreateDragDropOperation(UDragDropOperation::StaticClass());
     DragOperation->Payload = ItemObject;
     DragOperation->DefaultDragVisual = this;

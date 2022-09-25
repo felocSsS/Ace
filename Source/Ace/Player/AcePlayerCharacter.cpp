@@ -109,7 +109,7 @@ void AAcePlayerCharacter::GetTraceData(FVector& TraceStart, FVector& TraceEnd)
     
     TraceStart = ViewLocation;
     const FVector ShootDirection = ViewRotation.Vector();
-    TraceEnd = TraceStart + ShootDirection * 150;
+    TraceEnd = TraceStart + ShootDirection * 250;
 }
 
 void AAcePlayerCharacter::PickUpItem()

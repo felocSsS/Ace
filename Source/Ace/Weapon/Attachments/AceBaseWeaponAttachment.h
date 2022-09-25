@@ -6,6 +6,14 @@
 #include "Items/AceBaseItem.h"
 #include "AceBaseWeaponAttachment.generated.h"
 
+UENUM(BlueprintType)
+enum class EAttachmentType : uint8
+{
+    Sight,
+    Silencer,
+    Grip
+};
+
 UCLASS()
 class ACE_API AAceBaseWeaponAttachment : public AAceBaseItem
 {
@@ -19,8 +27,12 @@ public:
     
     FTransform GetAttachmentSocket(FName SocketName) const;
     
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "Info")
+    EAttachmentType AttachmentType;
+    
 protected:
 	virtual void BeginPlay() override;
+    virtual void GetDefaultItemObject() override;
 
 private:
     UPROPERTY(EditAnywhere, Category= "Attachment")
