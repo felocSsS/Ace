@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Objects/AceBaseItemObject.h"
 #include "AceGameHUD.generated.h"
 
 class UAcePickUpMessageWidget;
@@ -25,7 +26,7 @@ protected:
     TSubclassOf<UUserWidget> PickUpMessageWidgetClass;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-    TSubclassOf<UUserWidget/*UAceInventoryWidget*/> InventoryWidgetClass;
+    TSubclassOf<UAceInventoryWidget> InventoryWidgetClass;
 
     UAcePickUpMessageWidget* PickUpMessageWidget;
 
@@ -33,7 +34,7 @@ protected:
     void OnInteractableItemChange(bool ShowWidget, FText ItemName);
     
 private:
-    UUserWidget/*UAceInventoryWidget*/* InventoryWidget;
+    UAceInventoryWidget* InventoryWidget;
     AAcePlayerCharacter* Character;
     APlayerController* CharacterContoller;
 };

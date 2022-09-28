@@ -5,8 +5,10 @@
 #include "Items/AceBaseItem.h"
 #include "AceInventoryComponent.h"
 #include "GameFramework/Character.h"
+#include "Objects/AceBaseItemObject.h"
 #include "Player/AcePlayerCharacter.h"
 #include "Weapon/AceBaseWeapon.h"
+#include "Objects/WeaponItemObject/AceARItemObject.h"
 
 UAceWeaponComponent::UAceWeaponComponent()
 {
@@ -27,11 +29,12 @@ void UAceWeaponComponent::BeginPlay()
 void UAceWeaponComponent::SpawnStartWeapons()
 {
     AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
+    
     if(!Character || !GetWorld()) return;
 
-    for (auto Weapon : StartWeapons)
+    for (int32 i = 0; i < StartWeapons.Num(); ++i/*auto Weapon : StartWeapons*/)
     {
-        auto SpawnedWeapon = GetWorld()->SpawnActor<AAceBaseWeapon>(Weapon.WeaponClass);
+        auto SpawnedWeapon = GetWorld()->SpawnActor<AAceBaseWeapon>(StartWeapons[i].WeaponClass);
         if(!SpawnedWeapon) return;
         
         SpawnedWeapon->SetOwner(Character);
@@ -39,6 +42,8 @@ void UAceWeaponComponent::SpawnStartWeapons()
         SpawnedWeapon->SpawnStartAttachment();
         Weapons.Add(SpawnedWeapon);
 
+        NotyfyWidgetAboutAddingWeapon.Broadcast(SpawnedWeapon->GetItemObject(), i);
+        
         AttachWeaponToSocket(SpawnedWeapon, Character->GetMesh(), "InventorySlotSocket");
     }
 }
@@ -59,23 +64,24 @@ void UAceWeaponComponent::EquipWeapon(int32 WeaponIndex)
     CurrentWeaponChangedDelegate.Broadcast(CurrentWeapon);
 }
 
-void UAceWeaponComponent::AddWeapon(TSubclassOf<AAceBaseItem> Item, int32 AtIndex)
+void UAceWeaponComponent::AddWeapon(UAceARItemObject* Item, int32 AtIndex)
 {
     if (!Item || !GetWorld()) return;
 
     AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
     if (!Character) return;
     
-    const auto Weapon = GetWorld()->SpawnActor<AAceBaseWeapon>(Item);
+    const auto Weapon = GetWorld()->SpawnActor<AAceBaseWeapon>(Item->GetObjectClass());
     if (!Weapon) return;
 
     Weapon->SetOwner(Character);
+    Weapon->SpawnAttachmentsFromItemObject(Item->CurrentAttachemnts);
     
     if (Weapons.IsValidIndex(AtIndex))
         Weapons[AtIndex] = Weapon;
     else
     {
-        Weapons.SetNum(Weapons.Num() +1 );
+        Weapons.SetNum(Weapons.Num() +1);
         Weapons[AtIndex] = Weapon;
     }
 

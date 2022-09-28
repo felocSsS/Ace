@@ -14,19 +14,47 @@ bool UAceInventoryAttachmentSlotWidget::NativeOnDrop(const FGeometry& InGeometry
 {
     Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 
-    const auto Character = Cast<AAcePlayerCharacter>(GetOwningPlayerPawn());
-    const auto Payload = Cast<UAceAttachmentItemObject>(InOperation->Payload);
-    if (!Character || !Payload) return false;
-    
-    if (Payload->AttachmentType == SlotAttachmentType)
-    {
-        ItemImage->SetBrushFromTexture(Payload->GetObjectIcon());
-        ItemImage->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-        
-        Character->WeaponComponent->GetWeaponAtIndex(WeaponIndex)->SpawnAttachment(Payload->GetObjectClass(), SocketName);
-    }
-
-    ItemObject = Payload;
+    SetIconAndSpawn(InOperation->Payload);
     
     return true;
+}
+
+void UAceInventoryAttachmentSlotWidget::SetIconAndSpawn(UObject* Attachemnt)
+{
+    if (!Attachemnt) return;
+    
+    auto AttachemntItemObject = Cast<UAceAttachmentItemObject>(Attachemnt);
+    if (!AttachemntItemObject) return;
+
+    if (AttachemntItemObject->AttachmentType == SlotAttachmentType)
+    {
+        const auto Character = Cast<AAcePlayerCharacter>(GetOwningPlayerPawn());
+        if (!Character) return;
+        
+        ItemImage->SetBrushFromTexture(AttachemntItemObject->GetObjectIcon());
+        ItemImage->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+        Character->WeaponComponent->GetWeaponAtIndex(WeaponIndex)->SpawnAttachment(AttachemntItemObject->GetObjectClass(), SocketName);
+        ItemObject = AttachemntItemObject;
+    }
+}
+
+void UAceInventoryAttachmentSlotWidget::SetIcon(UObject* Attachemnt)
+{
+    if (!Attachemnt) return;
+    
+    auto AttachemntItemObject = Cast<UAceAttachmentItemObject>(Attachemnt);
+    if (!AttachemntItemObject) return;
+
+    if (AttachemntItemObject->AttachmentType == SlotAttachmentType)
+    {
+        ItemImage->SetBrushFromTexture(AttachemntItemObject->GetObjectIcon());
+        ItemImage->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+        ItemObject = AttachemntItemObject;
+    }
+}
+
+void UAceInventoryAttachmentSlotWidget::ClearSlot()
+{
+    ItemImage->SetBrushTintColor(FLinearColor(0.0f, 0.0f, 0.0f, 0.0f));
+    ItemObject = nullptr;
 }

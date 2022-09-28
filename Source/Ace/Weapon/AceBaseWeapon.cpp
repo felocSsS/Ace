@@ -6,6 +6,7 @@
 #include "Attachments/AceBaseWeaponAttachment.h"
 #include "Components/AceInventoryComponent.h"
 #include "Components/AceWeaponComponent.h"
+#include "Objects/AceBaseItemObject.h"
 #include "Player/AcePlayerCharacter.h"
 
 AAceBaseWeapon::AAceBaseWeapon()
@@ -41,37 +42,39 @@ void AAceBaseWeapon::SpawnStartAttachment()
     const AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
     if (!GetWorld() && !WeaponMesh && !Character) return;
 
-    const auto SpawnedSight = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Sight);
-    const auto SpawnedSilencer = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Silencer);
-    const auto SpawnedGrip = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Grip);
-    
-    if (SpawnedSight)
+    if (Sight)
     {
+        const auto SpawnedSight = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Sight);
         AttachAttachmentToSocket(SpawnedSight, WeaponMesh, "Sight");
         SpawnedSight->SetOwner(GetOwner());
         CurrentAttachments.Sight = Cast<AAceBaseWeaponAttachment>(SpawnedSight);
         Character->InventoryComponent->AddItem(SpawnedSight->GetItemObject());
     }
-
-    if (SpawnedSilencer)
+    
+    if (Silencer)
     {
+        const auto SpawnedSilencer = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Silencer);
         AttachAttachmentToSocket(SpawnedSilencer, WeaponMesh, "Silencer");
         SpawnedSilencer->SetOwner(GetOwner());
         CurrentAttachments.Silencer = Cast<AAceBaseWeaponAttachment>(SpawnedSilencer);
         Character->InventoryComponent->AddItem(SpawnedSilencer->GetItemObject()); 
     }
     
-    if (SpawnedGrip)
+    if (Grip)
     {
+        const auto SpawnedGrip = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Grip);
         AttachAttachmentToSocket(SpawnedGrip, WeaponMesh, "Grip");
         SpawnedGrip->SetOwner(GetOwner());
         CurrentAttachments.Grip = Cast<AAceBaseWeaponAttachment>(SpawnedGrip);
         Character->InventoryComponent->AddItem(SpawnedGrip->GetItemObject()); 
     }
+
+    UpdateItemObject();
 }
 
 void AAceBaseWeapon::SpawnAttachment(TSubclassOf<AAceBaseItem> Class, FName SocketName)
 {
+    if (!GetOwner() || !Class) return;
     const AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
     if (!Character) return;
     
@@ -93,7 +96,42 @@ void AAceBaseWeapon::SpawnAttachment(TSubclassOf<AAceBaseItem> Class, FName Sock
     Character->WeaponComponent->UpdateWeaponInfo();
 }
 
+void AAceBaseWeapon::SpawnAttachmentsFromItemObject(FAttachmentsReferences Attachments)
+{
+    const AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
+    if (!Character) return;
+    
+    if (Attachments.Sight)
+    {
+        const auto SpawnedSight = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Attachments.Sight->GetItemObject()->GetObjectClass());
+        AttachAttachmentToSocket(SpawnedSight, WeaponMesh, "Sight");
+        SpawnedSight->SetOwner(GetOwner());
+        CurrentAttachments.Sight = Cast<AAceBaseWeaponAttachment>(SpawnedSight);
+    }
+    
+    if (Attachments.Silencer)
+    {
+        const auto SpawnedSilencer = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Attachments.Silencer->GetItemObject()->GetObjectClass());
+        AttachAttachmentToSocket(SpawnedSilencer, WeaponMesh, "Silencer");
+        SpawnedSilencer->SetOwner(GetOwner());
+        CurrentAttachments.Silencer = Cast<AAceBaseWeaponAttachment>(SpawnedSilencer);
+    }
+    
+    if (Attachments.Grip)
+    {
+        const auto SpawnedGrip = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Attachments.Grip->GetItemObject()->GetObjectClass());
+        AttachAttachmentToSocket(SpawnedGrip, WeaponMesh, "Grip");
+        SpawnedGrip->SetOwner(GetOwner());
+        CurrentAttachments.Grip = Cast<AAceBaseWeaponAttachment>(SpawnedGrip);
+    }
+    Character->WeaponComponent->UpdateWeaponInfo();
+}
+
 void AAceBaseWeapon::AddRecoil()
+{
+}
+
+void AAceBaseWeapon::UpdateItemObject()
 {
 }
 

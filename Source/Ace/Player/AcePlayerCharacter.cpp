@@ -115,6 +115,7 @@ void AAcePlayerCharacter::GetTraceData(FVector& TraceStart, FVector& TraceEnd)
 void AAcePlayerCharacter::PickUpItem()
 {
     if (!Item) return;
+    
     InventoryComponent->AddItem(Item->GetItemObject());
     Item->Destroy();
     Item = nullptr;

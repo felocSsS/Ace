@@ -4,7 +4,6 @@
 #include "Animation/AcePlayerAnimInstance.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
-#include "Kismet/KismetStringLibrary.h"
 #include "Objects/WeaponItemObject/AceARItemObject.h"
 
 AAceRifleWeapon::AAceRifleWeapon()
@@ -84,6 +83,18 @@ void AAceRifleWeapon::MakeShot()
     GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::SanitizeFloat(CurrentAmmo.Bullets));
 }
 
+void AAceRifleWeapon::UpdateItemObject()
+{
+    if (!ItemObject)
+    {
+        GetDefaultItemObject();
+    }
+    else
+    {
+        Cast<UAceARItemObject>(ItemObject)->CurrentAttachemnts = CurrentAttachments;
+    }
+}
+
 bool AAceRifleWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd, FVector& EditedDir) const
 {
     FVector ViewLocation;
@@ -109,6 +120,7 @@ void AAceRifleWeapon::GetDefaultItemObject()
     NewItemObject->IsASightAvailable = IsASightAvailable;
     NewItemObject->IsAGripAvailable = IsAGripAvailable;
     NewItemObject->IsASilencerAvailable = IsASilencerAvailable;
+    NewItemObject->CurrentAttachemnts = CurrentAttachments;
     
     ItemObject = NewItemObject;
 }

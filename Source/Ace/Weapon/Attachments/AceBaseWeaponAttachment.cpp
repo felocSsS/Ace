@@ -12,11 +12,6 @@ AAceBaseWeaponAttachment::AAceBaseWeaponAttachment()
     AttachmentMesh->SetupAttachment(RootComponent);
 }
 
-void AAceBaseWeaponAttachment::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void AAceBaseWeaponAttachment::GetDefaultItemObject()
 {
     auto NewItemObject = NewObject<UAceAttachmentItemObject>(this);

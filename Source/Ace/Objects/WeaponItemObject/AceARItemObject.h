@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Objects/AceBaseItemObject.h"
+#include "Weapon/AceBaseWeapon.h"
 #include "AceARItemObject.generated.h"
 
 UCLASS()
@@ -15,7 +16,8 @@ public:
     bool IsASightAvailable;
     bool IsASilencerAvailable;
     bool IsAGripAvailable;
-    
+
+    FAttachmentsReferences CurrentAttachemnts;
 protected:
     
 private:

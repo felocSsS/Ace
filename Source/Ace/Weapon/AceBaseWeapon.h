@@ -52,9 +52,11 @@ public:
     virtual void MakeShot();
     virtual void AddRecoil();
 
+    virtual void UpdateItemObject();
     void ChangeClip();
     void SpawnStartAttachment();
     void SpawnAttachment(TSubclassOf<AAceBaseItem> Class, FName SocketName);
+    void SpawnAttachmentsFromItemObject(FAttachmentsReferences Attachments);
     
     FTransform GetSightTransform() const;
     FTransform GetGripTransform() const;

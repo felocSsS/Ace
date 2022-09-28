@@ -4,7 +4,6 @@
 #include "Blueprint/DragDropOperation.h"
 #include "Components/AceWeaponComponent.h"
 #include "Components/Image.h"
-#include "Components/TextBlock.h"
 #include "Objects/WeaponItemObject/AceARItemObject.h"
 #include "Player/AcePlayerCharacter.h"
 #include "AceInventoryAttachmentSlotWidget.h"
@@ -21,28 +20,77 @@ void UAceInventoryWeaponSlotWidget::NativeOnInitialized()
 
     GripSlot->SetVisibility(ESlateVisibility::Collapsed);
     GripSlot->WeaponIndex = IndexOfSlot;
+    
+    Character = Cast<AAcePlayerCharacter>(GetOwningPlayerPawn());
+    if(Character)
+    {
+        Character->WeaponComponent->NotyfyWidgetAboutAddingWeapon.AddDynamic(this, &UAceInventoryWeaponSlotWidget::AddWeaponWithoutSpawn);   
+    }
 }
 
 bool UAceInventoryWeaponSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
                                                  UDragDropOperation* InOperation)
 {
     Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
-
-    const auto Character = Cast<AAcePlayerCharacter>(GetOwningPlayerPawn());
-    const auto Payload = Cast<UAceARItemObject>(InOperation->Payload);
-    if (!GetWorld() || !Character || !Payload) return false;
     
-    ItemImage->SetBrushFromTexture(Payload->GetObjectIcon());
-    ItemImage->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-    /*ItemName->SetText(Payload->GetObjectName());*/
+    AddWeapon(Cast<UAceARItemObject>(InOperation->Payload));
     
-    !Payload->IsASightAvailable ? SightSlot->SetVisibility(ESlateVisibility::Visible) : SightSlot->SetVisibility(ESlateVisibility::Collapsed); 
-    !Payload->IsAGripAvailable ? GripSlot->SetVisibility(ESlateVisibility::Visible) : GripSlot->SetVisibility(ESlateVisibility::Collapsed); 
-    !Payload->IsASilencerAvailable ? SilencerSlot->SetVisibility(ESlateVisibility::Visible) : SilencerSlot->SetVisibility(ESlateVisibility::Collapsed);
-
-    ItemObject = Payload;
-    
-    Character->WeaponComponent->AddWeapon(Payload->GetObjectClass(), IndexOfSlot);
-
     return true;
 }
+
+void UAceInventoryWeaponSlotWidget::AddWeapon(UAceARItemObject* Item)
+{
+    if (!Item || !Character) return;
+
+    SetWidgetProperties(Item);
+    
+    SetIconToAttachmentSlot(Item);
+
+    ItemObject = Item;
+
+    Character->WeaponComponent->AddWeapon(Item, IndexOfSlot);
+}
+
+void UAceInventoryWeaponSlotWidget::AddWeaponWithoutSpawn(UAceBaseItemObject* Item, int32 Index)
+{
+    if (!Item || IndexOfSlot != Index) return;
+
+    const auto ItemAR = Cast<UAceARItemObject>(Item);
+    if (!ItemAR) return;
+
+    SetWidgetProperties(ItemAR);
+    SetIconToAttachmentSlot(ItemAR);
+
+    ItemObject = ItemAR; 
+}
+
+void UAceInventoryWeaponSlotWidget::SetWidgetProperties(const UAceARItemObject* Item)
+{
+    if (!Item) return;
+    
+    ItemImage->SetBrushFromTexture(Item->GetObjectIcon());
+    ItemImage->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+    
+    !Item->IsASightAvailable ? SightSlot->SetVisibility(ESlateVisibility::Visible) : SightSlot->SetVisibility(ESlateVisibility::Collapsed); 
+    !Item->IsAGripAvailable ? GripSlot->SetVisibility(ESlateVisibility::Visible) : GripSlot->SetVisibility(ESlateVisibility::Collapsed); 
+    !Item->IsASilencerAvailable ? SilencerSlot->SetVisibility(ESlateVisibility::Visible) : SilencerSlot->SetVisibility(ESlateVisibility::Collapsed);
+}
+
+void UAceInventoryWeaponSlotWidget::SetIconToAttachmentSlot(const UAceARItemObject* Item)
+{
+    if (Item->CurrentAttachemnts.Sight)
+        SightSlot->SetIcon(Item->CurrentAttachemnts.Sight->GetItemObject());
+    else
+        SightSlot->ClearSlot();
+        
+    if (Item->CurrentAttachemnts.Silencer)
+        SilencerSlot->SetIcon(Item->CurrentAttachemnts.Silencer->GetItemObject());
+    else
+        SightSlot->ClearSlot();
+    
+    if (Item->CurrentAttachemnts.Grip)
+        GripSlot->SetIcon(Item->CurrentAttachemnts.Grip->GetItemObject());
+    else
+        SightSlot->ClearSlot();
+}
+

@@ -31,7 +31,6 @@ public:
     EAttachmentType AttachmentType;
     
 protected:
-	virtual void BeginPlay() override;
     virtual void GetDefaultItemObject() override;
 
 private:

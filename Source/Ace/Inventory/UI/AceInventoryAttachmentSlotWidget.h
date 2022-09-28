@@ -18,6 +18,10 @@ class ACE_API UAceInventoryAttachmentSlotWidget : public UUserWidget
 public:
     int32 WeaponIndex;
     
+    void SetIconAndSpawn(UObject* Attachemnt);
+    void SetIcon(UObject* Attachemnt);
+    void ClearSlot();
+    
 protected:
     UPROPERTY(meta=(BindWidget))
     UImage* ItemImage;

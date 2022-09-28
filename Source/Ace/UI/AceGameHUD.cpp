@@ -19,7 +19,7 @@ void AAceGameHUD::BeginPlay()
 
     if (InventoryWidgetClass)
     {
-        InventoryWidget = CreateWidget</*UAceInventoryWidget*/UUserWidget>(GetWorld(), InventoryWidgetClass);
+        InventoryWidget = CreateWidget<UAceInventoryWidget>(GetWorld(), InventoryWidgetClass);
         InventoryWidget->SetOwningPlayer(CharacterContoller);   
     }
     
@@ -65,3 +65,4 @@ void AAceGameHUD::ToggleInventory()
         CharacterContoller->bShowMouseCursor = true;
     }
 }
+

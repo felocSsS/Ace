@@ -8,9 +8,12 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCurrentWeaponChangedDelegate, class AAceBaseWeapon*, CurrentWeapon);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUpdateWeaponInfoDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNotyfyWidgetAboutAddingWeapon, class UAceBaseItemObject*, Weapon, int32, Index);
 
 class AAceBaseWeapon;
 class AAceBaseItem;
+class UAceBaseItemObject;
+class UAceARItemObject;
 
 USTRUCT(BlueprintType)
 struct FWeaponData
@@ -36,12 +39,15 @@ public:
     UPROPERTY(BlueprintAssignable, Category="Weapon")
     FUpdateWeaponInfoDelegate UpdateWeaponInfoDelegate;
 
+    UPROPERTY(BlueprintAssignable, Category="Weapon")
+    FNotyfyWidgetAboutAddingWeapon NotyfyWidgetAboutAddingWeapon;
+
     void StartFire();
     void StopFire();
     void Reload();
     virtual void NextWeapon();
     void EquipWeapon(int32 WeaponIndex);
-    void AddWeapon(TSubclassOf<AAceBaseItem> Item, int32 AtIndex);
+    void AddWeapon(UAceARItemObject* Item, int32 AtIndex);
     void UpdateWeaponInfo() const { return UpdateWeaponInfoDelegate.Broadcast(); } 
     AAceBaseWeapon* GetWeaponAtIndex(int32 Index);
     

@@ -33,6 +33,7 @@ protected:
     
     virtual void BeginPlay() override;
     virtual void MakeShot() override;
+    virtual void UpdateItemObject() override;
     virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd, FVector& EditedDir) const override;
     
     UPROPERTY(BlueprintReadOnly, Category="Anim")
