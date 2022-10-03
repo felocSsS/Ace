@@ -17,7 +17,6 @@ class ACE_API AAceRifleWeapon : public AAceBaseWeapon
 	GENERATED_BODY()
 
 public:
-    AAceRifleWeapon();
     
 public:
     virtual void StartFire() override;

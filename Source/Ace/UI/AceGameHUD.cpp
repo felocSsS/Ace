@@ -34,8 +34,7 @@ void AAceGameHUD::BeginPlay()
 void AAceGameHUD::OnInteractableItemChange(bool ShowWidget, FText ItemName)
 {
     if (!PickUpMessageWidget) return;
-    //ShowWidget ? PickUpMessageWidget->AddToViewport() : PickUpMessageWidget->RemoveFromViewport();
-    //ShowWidget ? PickUpMessageWidget->SetMessageText(ItemName) : PickUpMessageWidget->SetMessageText(FText());
+
     if (ShowWidget)
     {
         PickUpMessageWidget->SetMessageText(ItemName);
@@ -52,17 +51,23 @@ void AAceGameHUD::OnInteractableItemChange(bool ShowWidget, FText ItemName)
 
 void AAceGameHUD::ToggleInventory()
 {
-    if (InventoryWidget->IsInViewport() && CharacterContoller)
+    if (InventoryWidget->IsInViewport())
     {
         InventoryWidget->RemoveFromViewport();
-        CharacterContoller->SetInputMode(FInputModeGameOnly());
-        CharacterContoller->bShowMouseCursor = false;
+        if (CharacterContoller)
+        {
+            CharacterContoller->SetInputMode(FInputModeGameOnly());
+            CharacterContoller->bShowMouseCursor = false;
+        }
     }
     else
     {
         InventoryWidget->AddToViewport();
-        CharacterContoller->SetInputMode(FInputModeGameAndUI());
-        CharacterContoller->bShowMouseCursor = true;
+        if (CharacterContoller)
+        {
+            CharacterContoller->SetInputMode(FInputModeGameAndUI());
+            CharacterContoller->bShowMouseCursor = true;   
+        }
     }
 }
 

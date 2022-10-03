@@ -57,6 +57,7 @@ public:
     void SpawnStartAttachment();
     void SpawnAttachment(TSubclassOf<AAceBaseItem> Class, FName SocketName);
     void SpawnAttachmentsFromItemObject(FAttachmentsReferences Attachments);
+    void DestroyWeapon();
     
     FTransform GetSightTransform() const;
     FTransform GetGripTransform() const;
@@ -64,6 +65,15 @@ public:
     bool IsAmmoEmpty() const;
     bool IsAmmoFull() const;
     bool CanReload() const;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attachment")
+    bool IsASightAvailable;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attachment")
+    bool IsASilencerAvailable;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attachment")
+    bool IsAGripAvailable;
     
     FAmmoData GetAmmoData() const { return CurrentAmmo; }
     
@@ -91,19 +101,9 @@ protected:
     virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd, FVector& EditedDir) const;
     bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
     bool IsClipEmpty() const;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attachment")
-    bool IsASightAvailable;
-    
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attachment")
-    bool IsASilencerAvailable;
-    
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attachment")
-    bool IsAGripAvailable;
     
     FAmmoData CurrentAmmo;
     
 private:
     void AttachAttachmentToSocket(AAceBaseWeaponAttachment* Attachment, USceneComponent* SceneComponent, const FName SocketName);
-    friend class AAceBaseInteractableItem; 
 };

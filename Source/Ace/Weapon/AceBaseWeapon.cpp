@@ -22,7 +22,6 @@ void AAceBaseWeapon::BeginPlay()
     Super::BeginPlay();
     
     CurrentAmmo = DefaultAmmo;
-    
 }
 
 void AAceBaseWeapon::StartFire()
@@ -127,6 +126,20 @@ void AAceBaseWeapon::SpawnAttachmentsFromItemObject(FAttachmentsReferences Attac
     Character->WeaponComponent->UpdateWeaponInfo();
 }
 
+void AAceBaseWeapon::DestroyWeapon()
+{
+    if(CurrentAttachments.Sight)
+        CurrentAttachments.Sight->Destroy();
+
+    if(CurrentAttachments.Silencer)
+        CurrentAttachments.Silencer->Destroy();
+
+    if(CurrentAttachments.Grip)
+        CurrentAttachments.Grip->Destroy();
+
+    Destroy();
+}
+
 void AAceBaseWeapon::AddRecoil()
 {
 }
@@ -227,7 +240,7 @@ FTransform AAceBaseWeapon::GetGripTransform() const
 
 bool AAceBaseWeapon::IsAmmoEmpty() const
 {
-    return !CurrentAmmo.Clips == 0 && IsClipEmpty();
+    return CurrentAmmo.Clips == 0 && IsClipEmpty();
 }
 
 bool AAceBaseWeapon::IsClipEmpty() const

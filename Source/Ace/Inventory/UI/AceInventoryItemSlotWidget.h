@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/AceBaseWidget.h"
 #include "AceInventoryItemSlotWidget.generated.h"
 
 class UAceBaseItemObject;
 class UImage;
 
 UCLASS()
-class ACE_API UAceInventoryItemSlotWidget : public UUserWidget
+class ACE_API UAceInventoryItemSlotWidget : public UAceBaseWidget
 {
 	GENERATED_BODY()
     

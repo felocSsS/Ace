@@ -13,7 +13,7 @@ void UAceHealthComponent::BeginPlay()
 	Super::BeginPlay();
     check(MaxHealth > 0);
 
-    SetHealth(MaxHealth, MaxHealth);
+    SetHealth(MaxHealth, MaxHealth); // TODO попробовать сделать перегрузку функцию
 
     AActor* ComponentOwner = GetOwner();
 

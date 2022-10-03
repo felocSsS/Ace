@@ -19,15 +19,14 @@ public:
     
 public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Item")
-    USkeletalMeshComponent* ItemMesh;
+    UStaticMeshComponent* ItemMesh;
         
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Item")
     UBoxComponent* CollisionBox;
     
 protected:
-    virtual void BeginPlay() override;
     virtual void GetDefaultItemObject() override;
-    
+
 private:
     
 };

@@ -5,7 +5,7 @@
 
 UAceInventoryComponent::UAceInventoryComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UAceInventoryComponent::BeginPlay()
@@ -18,6 +18,7 @@ bool UAceInventoryComponent::AddItem(UAceBaseItemObject* ItemObject)
     if (!ItemObject) return false;
 
     Items.Add(ItemObject);
+    OnItemAdded.Broadcast(ItemObject);
     return true;
 }
 
@@ -41,14 +42,3 @@ TArray<UAceBaseItemObject*> UAceInventoryComponent::GetItemsOfClass(const TSubcl
 
     return ArrayItemsOfClass;
 }
-
-void UAceInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    
-    /*for (const auto item : Items)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Black, item->GetName());
-    }*/
-}
-

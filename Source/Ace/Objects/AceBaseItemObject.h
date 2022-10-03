@@ -26,15 +26,6 @@ protected:
     
     TSubclassOf<AAceBaseItem> ItemClass;
 
-    UFUNCTION(BlueprintCallable)
-    void BPGetIcon(UTexture2D*& BPIcon);
-    
-    UFUNCTION(BlueprintCallable)
-    void BPGetName(FText& BPName);
-    
-    UFUNCTION(BlueprintCallable)
-    void BPGetClass(TSubclassOf<AAceBaseItem>& Class);
-    
 private:
     
 };

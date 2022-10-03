@@ -2,14 +2,10 @@
 
 #include "Weapon/AceRifleWeapon.h"
 #include "Animation/AcePlayerAnimInstance.h"
+#include "Attachments/AceBaseWeaponAttachment.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "Objects/WeaponItemObject/AceARItemObject.h"
-
-AAceRifleWeapon::AAceRifleWeapon()
-{
-    
-}
 
 void AAceRifleWeapon::BeginPlay()
 {

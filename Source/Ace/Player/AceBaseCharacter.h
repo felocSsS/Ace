@@ -18,15 +18,10 @@ public:
 	AAceBaseCharacter();
 
 public:	
-	virtual void Tick(float DeltaTime) override;
-
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
     UAceWeaponComponent* WeaponComponent;
     
-    UFUNCTION(BlueprintCallable, Category="Movement")
     float GetCharacterVelocity() const;
-
-    UFUNCTION(BlueprintCallable, Category="Movement")
     float GetMovementDirection() const;
 	
 protected:
@@ -34,7 +29,7 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
     UAceHealthComponent* HealthComponent;
-
+    
 private:
 	
 };

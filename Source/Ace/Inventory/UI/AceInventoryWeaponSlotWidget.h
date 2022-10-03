@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/AceBaseWidget.h"
 #include "AceInventoryWeaponSlotWidget.generated.h"
 
 class UImage;
@@ -14,7 +14,7 @@ class AAcePlayerCharacter;
 class UAceARItemObject;
 
 UCLASS()
-class ACE_API UAceInventoryWeaponSlotWidget : public UUserWidget
+class ACE_API UAceInventoryWeaponSlotWidget : public UAceBaseWidget
 {
 	GENERATED_BODY()
     
@@ -23,9 +23,6 @@ public:
 protected:
     UPROPERTY(meta=(BindWidget))
     UImage* ItemImage;
-
-    /*UPROPERTY(meta=(BindWidget))
-    UTextBlock* ItemName;*/
 
     UPROPERTY(meta=(BindWidget))
     UAceInventoryAttachmentSlotWidget* SightSlot;
@@ -42,7 +39,7 @@ protected:
     UFUNCTION()
     void AddWeaponWithoutSpawn(UAceBaseItemObject* Item, int32 IndexOfSlot);
     
-    void AddWeapon(UAceARItemObject* Item);
+    void AddWeapon(UAceARItemObject* WeaponItemObject);
     void SetWidgetProperties(const UAceARItemObject* Item);
     void SetIconToAttachmentSlot(const UAceARItemObject* Item);
     
@@ -52,5 +49,5 @@ protected:
     UAceBaseItemObject* ItemObject;
     
 private:
-    AAcePlayerCharacter* Character;
+
 };

@@ -6,6 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "AceInventoryComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemAdded, class UAceBaseItemObject*, Item);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemDeleted, class UAceBaseItemObject*, Item);
+
 class UAceBaseItemObject;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -17,6 +20,12 @@ public:
 	UAceInventoryComponent();
 
 public:
+    UPROPERTY(BlueprintAssignable)
+    FOnItemAdded OnItemAdded;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnItemDeleted OnItemDeleted;
+    
     bool AddItem(UAceBaseItemObject* ItemObject);
 
     //test
@@ -28,8 +37,6 @@ public:
     
     TArray<UAceBaseItemObject*> GetAllItems() const;
     TArray<UAceBaseItemObject*> GetItemsOfClass(const TSubclassOf<UAceBaseItemObject> Class) const;
-    
-    virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     
 protected:
 	virtual void BeginPlay() override;

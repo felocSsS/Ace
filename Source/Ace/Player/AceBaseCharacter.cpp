@@ -20,12 +20,6 @@ void AAceBaseCharacter::BeginPlay()
 	
 }
 
-void AAceBaseCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 float AAceBaseCharacter::GetCharacterVelocity() const
 {
     return GetVelocity().Length();

@@ -100,8 +100,7 @@ void AAcePlayerCharacter::TryFindInteractableItem()
 
 void AAcePlayerCharacter::GetTraceData(FVector& TraceStart, FVector& TraceEnd)
 {
-    const auto AceController = GetController<APlayerController>();
-    if (!AceController) return;
+    if (!Controller) return;
     
     FVector ViewLocation;
     FRotator ViewRotation;
@@ -129,33 +128,37 @@ void AAcePlayerCharacter::OpenInventory()
 
 void AAcePlayerCharacter::MoveForward(float Value)
 {
-    if(!AnimInstance) return;
-    
 	if (Value == 0.0f)
 	{
-	    AnimInstance->bIsMovingForward = false;
+	    if (AnimInstance)
+	        AnimInstance->bIsMovingForward = false;   
 	}
     else
     {
         AddMovementInput(GetActorForwardVector(), Value);
-        AnimInstance->MoveForwardValue = Value;
-        AnimInstance->bIsMovingForward = true;
+        if (AnimInstance)
+        {
+            AnimInstance->MoveForwardValue = Value;
+            AnimInstance->bIsMovingForward = true;   
+        }
     }
 }
 
 void AAcePlayerCharacter::MoveRight(float Value)
 {
-    if(!AnimInstance) return;
-
 	if (Value == 0.0f)
 	{
-	    AnimInstance->bIsMovingRight = false;    
+	    if (AnimInstance)
+	        AnimInstance->bIsMovingRight = false;   
 	}
     else
     {
         AddMovementInput(GetActorRightVector(), Value);
-        AnimInstance->MoveRightValue = Value;
-        AnimInstance->bIsMovingRight = true;
+        if (AnimInstance)
+        {
+            AnimInstance->MoveRightValue = Value;
+            AnimInstance->bIsMovingRight = true;   
+        }
     }
 }
 
@@ -165,7 +168,6 @@ void AAcePlayerCharacter::Aim()
     GetMesh()->SetTickGroup(TG_PostUpdateWork);
     if (AnimInstance)
         AnimInstance->ShakingModifier = 0.1;
-   //CameraComponent->SetFieldOfView(60);
 }
 
 void AAcePlayerCharacter::ResetAim()
@@ -174,5 +176,4 @@ void AAcePlayerCharacter::ResetAim()
     GetMesh()->SetTickGroup(TG_PrePhysics);
     if (AnimInstance)
         AnimInstance->ShakingModifier = 1.0f;
-    //CameraComponent->SetFieldOfView(90);
 }

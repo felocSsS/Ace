@@ -18,6 +18,10 @@ class ACE_API AAceGameHUD : public AHUD
 
 public:
     void ToggleInventory();
+
+    //test
+    UAceInventoryWidget* GetInventory() const { return InventoryWidget; }
+    //test
     
 protected:
     virtual void BeginPlay() override;

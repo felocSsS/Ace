@@ -3,15 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AceInventoryItemSlotWidget.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/AceBaseWidget.h"
 #include "AceInventoryGridWidget.generated.h"
 
 class UUniformGridPanel;
 class AAcePlayerCharacter;
+class UAceInventoryItemSlotWidget;
+class UAceBaseItemObject;
 
 UCLASS()
-class ACE_API UAceInventoryGridWidget : public UUserWidget
+class ACE_API UAceInventoryGridWidget : public UAceBaseWidget
 {
 	GENERATED_BODY()
 
@@ -20,16 +21,20 @@ public:
     UUniformGridPanel* GridPanel;
     
     void SpawnAllItems();
+    void SortItems();
+    void SortItems(int32 AtIndex);
+    void DeleteItemFromWidget(UAceBaseItemObject* Item);
     
 protected:
     virtual void NativeOnInitialized() override;
-    virtual void NativeConstruct() override;
+
+    UFUNCTION()
+    void AddItemToGrid(UAceBaseItemObject* Item);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=UI)
     TSubclassOf<UAceInventoryItemSlotWidget> ItemClass;
-
-    AAcePlayerCharacter* Character;
     
 private:
     int32 SlotsInRow = 10;
+    TArray<UAceBaseItemObject*> Items;
 };

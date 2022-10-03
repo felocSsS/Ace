@@ -1,6 +1,5 @@
 // Ace Game. All Rights Reserved.
 
-
 #include "Components/AceWeaponComponent.h"
 #include "Items/AceBaseItem.h"
 #include "AceInventoryComponent.h"
@@ -32,15 +31,15 @@ void UAceWeaponComponent::SpawnStartWeapons()
     
     if(!Character || !GetWorld()) return;
 
-    for (int32 i = 0; i < StartWeapons.Num(); ++i/*auto Weapon : StartWeapons*/)
+    for (int32 i = 0; i < StartWeapons.Num(); ++i)
     {
         auto SpawnedWeapon = GetWorld()->SpawnActor<AAceBaseWeapon>(StartWeapons[i].WeaponClass);
         if(!SpawnedWeapon) return;
         
         SpawnedWeapon->SetOwner(Character);
-        Character->InventoryComponent->AddItem(SpawnedWeapon->GetItemObject());
         SpawnedWeapon->SpawnStartAttachment();
         Weapons.Add(SpawnedWeapon);
+        Character->InventoryComponent->AddItem(SpawnedWeapon->GetItemObject());
 
         NotyfyWidgetAboutAddingWeapon.Broadcast(SpawnedWeapon->GetItemObject(), i);
         
@@ -78,10 +77,17 @@ void UAceWeaponComponent::AddWeapon(UAceARItemObject* Item, int32 AtIndex)
     Weapon->SpawnAttachmentsFromItemObject(Item->CurrentAttachemnts);
     
     if (Weapons.IsValidIndex(AtIndex))
-        Weapons[AtIndex] = Weapon;
+    {
+        Weapons[AtIndex]->DestroyWeapon();
+        Weapons[AtIndex] = Weapon;   
+    }
     else
     {
         Weapons.SetNum(Weapons.Num() +1);
+        if(Weapons[AtIndex])
+        {
+            Weapons[AtIndex]->DestroyWeapon();   
+        }
         Weapons[AtIndex] = Weapon;
     }
 
@@ -116,7 +122,7 @@ void UAceWeaponComponent::StartFire()
 
 void UAceWeaponComponent::StopFire()
 {
-    if (!CanFire() || !CurrentWeapon) return;
+    if (!CurrentWeapon) return;
 
     CurrentWeapon->StopFire();
 }

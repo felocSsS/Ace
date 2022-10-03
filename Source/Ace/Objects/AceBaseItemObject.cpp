@@ -33,18 +33,3 @@ void UAceBaseItemObject::SetName(FText Text)
 {
     Name = Text;
 }
-
-void UAceBaseItemObject::BPGetIcon(UTexture2D*& BPIcon)
-{
-    BPIcon = GetObjectIcon();
-}
-
-void UAceBaseItemObject::BPGetName(FText& BPName)
-{
-    BPName = GetObjectName();
-}
-
-void UAceBaseItemObject::BPGetClass(TSubclassOf<AAceBaseItem>& Class)
-{
-    Class = GetObjectClass();
-}

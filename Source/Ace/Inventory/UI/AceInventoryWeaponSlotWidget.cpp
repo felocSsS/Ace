@@ -7,6 +7,9 @@
 #include "Objects/WeaponItemObject/AceARItemObject.h"
 #include "Player/AcePlayerCharacter.h"
 #include "AceInventoryAttachmentSlotWidget.h"
+#include "AceInventoryWidget.h"
+#include "UI/AceGameHUD.h"
+#include "Inventory/UI/AceInventoryGridWidget.h"
 
 void UAceInventoryWeaponSlotWidget::NativeOnInitialized()
 {
@@ -21,41 +24,43 @@ void UAceInventoryWeaponSlotWidget::NativeOnInitialized()
     GripSlot->SetVisibility(ESlateVisibility::Collapsed);
     GripSlot->WeaponIndex = IndexOfSlot;
     
-    Character = Cast<AAcePlayerCharacter>(GetOwningPlayerPawn());
     if(Character)
-    {
-        Character->WeaponComponent->NotyfyWidgetAboutAddingWeapon.AddDynamic(this, &UAceInventoryWeaponSlotWidget::AddWeaponWithoutSpawn);   
-    }
+        Character->WeaponComponent->NotyfyWidgetAboutAddingWeapon.AddDynamic(this, &UAceInventoryWeaponSlotWidget::AddWeaponWithoutSpawn);
 }
 
 bool UAceInventoryWeaponSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
                                                  UDragDropOperation* InOperation)
 {
     Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+
+    const auto WeaponItemObject = Cast<UAceARItemObject>(InOperation->Payload);
     
-    AddWeapon(Cast<UAceARItemObject>(InOperation->Payload));
+    if (WeaponItemObject)
+    {
+        HUD->GetInventory()->InventoryGrid->DeleteItemFromWidget(WeaponItemObject);
+        AddWeapon(WeaponItemObject);
+    }
     
     return true;
 }
 
-void UAceInventoryWeaponSlotWidget::AddWeapon(UAceARItemObject* Item)
+void UAceInventoryWeaponSlotWidget::AddWeapon(UAceARItemObject* WeaponItemObject)
 {
-    if (!Item || !Character) return;
+    if (!WeaponItemObject || !Character) return;
 
-    SetWidgetProperties(Item);
-    
-    SetIconToAttachmentSlot(Item);
+    SetWidgetProperties(WeaponItemObject);
+    SetIconToAttachmentSlot(WeaponItemObject);
 
-    ItemObject = Item;
+    ItemObject = WeaponItemObject;
 
-    Character->WeaponComponent->AddWeapon(Item, IndexOfSlot);
+    Character->WeaponComponent->AddWeapon(WeaponItemObject, IndexOfSlot);
 }
 
-void UAceInventoryWeaponSlotWidget::AddWeaponWithoutSpawn(UAceBaseItemObject* Item, int32 Index)
+void UAceInventoryWeaponSlotWidget::AddWeaponWithoutSpawn(UAceBaseItemObject* WeaponItemObject, int32 Index)
 {
-    if (!Item || IndexOfSlot != Index) return;
+    if (!WeaponItemObject || IndexOfSlot != Index) return;
 
-    const auto ItemAR = Cast<UAceARItemObject>(Item);
+    const auto ItemAR = Cast<UAceARItemObject>(WeaponItemObject);
     if (!ItemAR) return;
 
     SetWidgetProperties(ItemAR);

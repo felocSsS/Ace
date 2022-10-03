@@ -16,6 +16,7 @@ AAceDevDamageActor::AAceDevDamageActor()
 void AAceDevDamageActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+    
     if(GetWorld())
     {
         DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 24, SphereColor);
