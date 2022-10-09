@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Items/AceBaseItem.h"
+#include "Objects/WeaponItemObject/AceARItemObject.h"
+#include "Player/AcePlayerCharacter.h"
 #include "AceBaseWeapon.generated.h"
 
 class AAceBaseWeaponAttachment;
@@ -56,7 +58,8 @@ public:
     void ChangeClip();
     void SpawnStartAttachment();
     void SpawnAttachment(TSubclassOf<AAceBaseItem> Class, FName SocketName);
-    void SpawnAttachmentsFromItemObject(FAttachmentsReferences Attachments);
+    void DestroyAttachment(UAceAttachmentItemObject* AttachmentItemObject);
+    void SpawnAttachmentsFromItemObject(FAttachmentsItemObjects Attachments);
     void DestroyWeapon();
     
     FTransform GetSightTransform() const;
@@ -89,8 +92,8 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attachment|StartAttachment", meta = (EditCondition = "!IsAGripAvailable"))
     TSubclassOf<AAceBaseWeaponAttachment> Grip;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Attachment")
     FAttachmentsReferences CurrentAttachments;
+    FAttachmentsItemObjects CurrentAttachmentsItemObjects;
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "Weapon")
     float TraceMaxDistance = 15000.0f;
@@ -101,6 +104,8 @@ protected:
     virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd, FVector& EditedDir) const;
     bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
     bool IsClipEmpty() const;
+
+    AAcePlayerCharacter* GetAceCharacter();
     
     FAmmoData CurrentAmmo;
     

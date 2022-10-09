@@ -3,9 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Attachment/AceAttachmentItemObject.h"
 #include "Objects/AceBaseItemObject.h"
-#include "Weapon/AceBaseWeapon.h"
 #include "AceARItemObject.generated.h"
+
+USTRUCT(BlueprintType)
+struct FAttachmentsItemObjects
+{
+    GENERATED_USTRUCT_BODY()
+    
+    UAceAttachmentItemObject* Sight;
+    
+    UAceAttachmentItemObject* Silencer;
+    
+    UAceAttachmentItemObject* Grip;
+};
 
 UCLASS()
 class ACE_API UAceARItemObject : public UAceBaseItemObject
@@ -17,7 +29,8 @@ public:
     bool IsASilencerAvailable;
     bool IsAGripAvailable;
 
-    FAttachmentsReferences CurrentAttachemnts;
+    FAttachmentsItemObjects CurrentAttachemntsItemObjects;
+    
 protected:
     
 private:

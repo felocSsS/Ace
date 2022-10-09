@@ -39,7 +39,7 @@ void UAceWeaponComponent::SpawnStartWeapons()
         SpawnedWeapon->SetOwner(Character);
         SpawnedWeapon->SpawnStartAttachment();
         Weapons.Add(SpawnedWeapon);
-        Character->InventoryComponent->AddItem(SpawnedWeapon->GetItemObject());
+        //Character->InventoryComponent->AddItem(SpawnedWeapon->GetItemObject());
 
         NotyfyWidgetAboutAddingWeapon.Broadcast(SpawnedWeapon->GetItemObject(), i);
         
@@ -49,7 +49,7 @@ void UAceWeaponComponent::SpawnStartWeapons()
 
 void UAceWeaponComponent::EquipWeapon(int32 WeaponIndex)
 {
-    if (WeaponIndex < 0 || !Weapons.IsValidIndex(WeaponIndex)) return;
+    if (WeaponIndex < 0 || !Weapons.IsValidIndex(WeaponIndex) || !Weapons[WeaponIndex]) return;
 
     const ACharacter* Character = Cast<ACharacter>(GetOwner());
     if (!Character) return;
@@ -74,11 +74,14 @@ void UAceWeaponComponent::AddWeapon(UAceARItemObject* Item, int32 AtIndex)
     if (!Weapon) return;
 
     Weapon->SetOwner(Character);
-    Weapon->SpawnAttachmentsFromItemObject(Item->CurrentAttachemnts);
+    Weapon->SpawnAttachmentsFromItemObject(Item->CurrentAttachemntsItemObjects);
     
     if (Weapons.IsValidIndex(AtIndex))
     {
-        Weapons[AtIndex]->DestroyWeapon();
+        if (Weapons[AtIndex])
+        {
+            Weapons[AtIndex]->DestroyWeapon();   
+        }
         Weapons[AtIndex] = Weapon;   
     }
     else
@@ -102,6 +105,14 @@ AAceBaseWeapon* UAceWeaponComponent::GetWeaponAtIndex(int32 Index)
     }
 
     return nullptr;
+}
+
+void UAceWeaponComponent::DestoyWeapon(int32 Index)
+{
+    if (!Weapons.IsValidIndex(Index)) return;
+
+    Weapons[Index]->DestroyWeapon();
+    Weapons[Index] = nullptr;
 }
 
 void UAceWeaponComponent::AttachWeaponToSocket(AAceBaseWeapon* Weapon, USceneComponent* SceneComponent,

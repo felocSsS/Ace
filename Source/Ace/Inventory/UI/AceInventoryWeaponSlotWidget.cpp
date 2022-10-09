@@ -10,6 +10,9 @@
 #include "AceInventoryWidget.h"
 #include "UI/AceGameHUD.h"
 #include "Inventory/UI/AceInventoryGridWidget.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Inventory/AceInventoryDragDropOperation.h"
+#include "Objects/WeaponItemObject/Attachment/AceAttachmentItemObject.h"
 
 void UAceInventoryWeaponSlotWidget::NativeOnInitialized()
 {
@@ -17,14 +20,17 @@ void UAceInventoryWeaponSlotWidget::NativeOnInitialized()
 
     SightSlot->SetVisibility(ESlateVisibility::Collapsed);
     SightSlot->WeaponIndex = IndexOfSlot;
+    SightSlot->OwnerWidget = this;
 
     SilencerSlot->SetVisibility(ESlateVisibility::Collapsed);
     SilencerSlot->WeaponIndex = IndexOfSlot;
+    SilencerSlot->OwnerWidget = this;
 
     GripSlot->SetVisibility(ESlateVisibility::Collapsed);
     GripSlot->WeaponIndex = IndexOfSlot;
+    GripSlot->OwnerWidget = this;
     
-    if(Character)
+    if (Character)
         Character->WeaponComponent->NotyfyWidgetAboutAddingWeapon.AddDynamic(this, &UAceInventoryWeaponSlotWidget::AddWeaponWithoutSpawn);
 }
 
@@ -33,15 +39,58 @@ bool UAceInventoryWeaponSlotWidget::NativeOnDrop(const FGeometry& InGeometry, co
 {
     Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 
+    const auto AceDragAndDropOperation = Cast<UAceInventoryDragDropOperation>(InOperation);
     const auto WeaponItemObject = Cast<UAceARItemObject>(InOperation->Payload);
     
-    if (WeaponItemObject)
+    if (WeaponItemObject && AceDragAndDropOperation && WeaponItemObject != ItemObject)
     {
+        if (ItemObject)
+            HUD->GetInventory()->InventoryGrid->AddItemToGrid(ItemObject); 
         HUD->GetInventory()->InventoryGrid->DeleteItemFromWidget(WeaponItemObject);
         AddWeapon(WeaponItemObject);
+        AceDragAndDropOperation->WidgetFrom->ClearSlotAndDestroy();
     }
     
     return true;
+}
+
+FReply UAceInventoryWeaponSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry,
+    const FPointerEvent& InMouseEvent)
+{
+    Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+
+    FEventReply Reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
+    
+    return Reply.NativeReply;
+}
+
+void UAceInventoryWeaponSlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent,
+    UDragDropOperation*& OutOperation)
+{
+    Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
+
+    const auto DragOperation = Cast<UAceInventoryDragDropOperation>(UWidgetBlueprintLibrary::CreateDragDropOperation(UAceInventoryDragDropOperation::StaticClass()));
+    DragOperation->Payload = ItemObject;
+    DragOperation->DefaultDragVisual = this;
+    DragOperation->Pivot = EDragPivot::CenterCenter;
+    DragOperation->WidgetFrom = this;
+
+    OutOperation = DragOperation;
+}
+
+void UAceInventoryWeaponSlotWidget::ClearSlotAndDestroy(const bool DeleteInfoAboutAttachment)
+{
+    SightSlot->ClearSlotAndDestroy();
+    SightSlot->SetVisibility(ESlateVisibility::Collapsed);
+    SilencerSlot->ClearSlotAndDestroy();
+    SilencerSlot->SetVisibility(ESlateVisibility::Collapsed);
+    GripSlot->ClearSlotAndDestroy();
+    GripSlot->SetVisibility(ESlateVisibility::Collapsed);
+
+    ItemImage->SetBrushTintColor(FLinearColor(0.0f, 0.0f, 0.0f, 0.0f));
+
+    Character->WeaponComponent->DestoyWeapon(IndexOfSlot);
+    ItemObject = nullptr;
 }
 
 void UAceInventoryWeaponSlotWidget::AddWeapon(UAceARItemObject* WeaponItemObject)
@@ -83,19 +132,60 @@ void UAceInventoryWeaponSlotWidget::SetWidgetProperties(const UAceARItemObject* 
 
 void UAceInventoryWeaponSlotWidget::SetIconToAttachmentSlot(const UAceARItemObject* Item)
 {
-    if (Item->CurrentAttachemnts.Sight)
-        SightSlot->SetIcon(Item->CurrentAttachemnts.Sight->GetItemObject());
+    if (Item->CurrentAttachemntsItemObjects.Sight)
+        SightSlot->SetIcon(Item->CurrentAttachemntsItemObjects.Sight);   
     else
         SightSlot->ClearSlot();
         
-    if (Item->CurrentAttachemnts.Silencer)
-        SilencerSlot->SetIcon(Item->CurrentAttachemnts.Silencer->GetItemObject());
+    if (Item->CurrentAttachemntsItemObjects.Silencer)
+        SilencerSlot->SetIcon(Item->CurrentAttachemntsItemObjects.Silencer);
     else
-        SightSlot->ClearSlot();
+        SilencerSlot->ClearSlot();
     
-    if (Item->CurrentAttachemnts.Grip)
-        GripSlot->SetIcon(Item->CurrentAttachemnts.Grip->GetItemObject());
+    if (Item->CurrentAttachemntsItemObjects.Grip)
+        GripSlot->SetIcon(Item->CurrentAttachemntsItemObjects.Grip);
     else
-        SightSlot->ClearSlot();
+        GripSlot->ClearSlot();
 }
 
+void UAceInventoryWeaponSlotWidget::AddAttachmentToItemObject(UAceAttachmentItemObject* AttachmentItemObject)
+{
+    if (!AttachmentItemObject) return;
+
+    const auto WeaponItemObject = Cast<UAceARItemObject>(ItemObject);
+    switch (AttachmentItemObject->AttachmentType)
+    {
+        case EAttachmentType::Grip:
+            WeaponItemObject->CurrentAttachemntsItemObjects.Grip = AttachmentItemObject;
+            break;
+
+        case EAttachmentType::Sight:
+            WeaponItemObject->CurrentAttachemntsItemObjects.Sight = AttachmentItemObject;
+            break;
+
+        case EAttachmentType::Silencer:
+            WeaponItemObject->CurrentAttachemntsItemObjects.Silencer = AttachmentItemObject;
+            break;
+    }
+}
+
+void UAceInventoryWeaponSlotWidget::DeleteAttachmentFromItemObject(UAceAttachmentItemObject* AttachmentItemObject)
+{
+    if (!AttachmentItemObject) return;
+
+    const auto WeaponItemObject = Cast<UAceARItemObject>(ItemObject);
+    switch (AttachmentItemObject->AttachmentType)
+    {
+    case EAttachmentType::Grip:
+        WeaponItemObject->CurrentAttachemntsItemObjects.Grip = nullptr;
+        break;
+
+    case EAttachmentType::Sight:
+        WeaponItemObject->CurrentAttachemntsItemObjects.Sight = nullptr;
+        break;
+
+    case EAttachmentType::Silencer:
+        WeaponItemObject->CurrentAttachemntsItemObjects.Silencer = nullptr;
+        break;
+    }
+}

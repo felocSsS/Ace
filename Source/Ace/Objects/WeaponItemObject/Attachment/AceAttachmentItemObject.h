@@ -14,6 +14,7 @@ class ACE_API UAceAttachmentItemObject : public UAceBaseItemObject
 
 public:
     EAttachmentType AttachmentType;
+    
 protected:
 
 private:

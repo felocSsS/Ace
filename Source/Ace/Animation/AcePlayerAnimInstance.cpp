@@ -38,7 +38,8 @@ void UAcePlayerAnimInstance::NativeBeginPlay()
 void UAcePlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
     Super::NativeUpdateAnimation(DeltaSeconds);
-    
+
+    //test();
     SetCharacterVars();
     SetAimOffset();
     SetRelativeCameraTransform();
@@ -46,7 +47,6 @@ void UAcePlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     SetWalkWeaponSway(DeltaSeconds);
     SetMoveInSides(DeltaSeconds);
     SetTurnWeaponSway(DeltaSeconds);
-    //GetLeftHandTransform();
     TimeLine.TickTimeline(DeltaSeconds);
 
     InterpRecoil(DeltaSeconds);
@@ -185,6 +185,16 @@ void UAcePlayerAnimInstance::UpdateInfo()
     GetLeftHandTransform();
 }
 
+/*void UAcePlayerAnimInstance::test()
+{
+    if(!Character) return;
+    auto test1 = RelativeHandTransform * Character->GetMesh()->GetSocketTransform("hand_r");
+    auto test2 = FTransform() * Character->GetMesh()->GetSocketTransform("head");
+    auto test3 = FTransform( FRotator(0.0f, 0.0f, 90.0f).Quaternion(), test2.GetLocation());
+    auto test4 = UKismetMathLibrary::MakeRelativeTransform(test1, test3);
+    testtt1 = test4 * RelativeCameraTransform;
+}*/
+
 void UAcePlayerAnimInstance::GetLeftHandTransform()
 {
     if (!CurrentWeapon || !CurrentWeapon->WeaponMesh || !Character || !Character->GetMesh()) return;
@@ -209,7 +219,7 @@ void UAcePlayerAnimInstance::GetRelativeRightHandTransform()
 void UAcePlayerAnimInstance::Fire()
 {
     FVector RecoilLoc = FinalRecoilTransform.GetLocation();
-    RecoilLoc.X += FMath::RandRange(5.0f, 7.0f);
+    RecoilLoc.X += FMath::RandRange(8.0f, 13.0f);
     FinalRecoilTransform.SetLocation(-RecoilLoc); 
 }
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "UI/AceBaseWidget.h"
 #include "AceInventoryWeaponSlotWidget.generated.h"
 
@@ -12,6 +13,7 @@ class UAceInventoryAttachmentSlotWidget;
 class UAceBaseItemObject;
 class AAcePlayerCharacter;
 class UAceARItemObject;
+class UAceAttachmentItemObject;
 
 UCLASS()
 class ACE_API UAceInventoryWeaponSlotWidget : public UAceBaseWidget
@@ -19,7 +21,9 @@ class ACE_API UAceInventoryWeaponSlotWidget : public UAceBaseWidget
 	GENERATED_BODY()
     
 public:
-
+    void AddAttachmentToItemObject(UAceAttachmentItemObject* AttachmentItemObject);
+    void DeleteAttachmentFromItemObject(UAceAttachmentItemObject* AttachmentItemObject);
+    
 protected:
     UPROPERTY(meta=(BindWidget))
     UImage* ItemImage;
@@ -35,6 +39,9 @@ protected:
 
     virtual void NativeOnInitialized() override;
     virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+    virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+    virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
+    virtual void ClearSlotAndDestroy(const bool DeleteInfoAboutAttachment = false) override;
 
     UFUNCTION()
     void AddWeaponWithoutSpawn(UAceBaseItemObject* Item, int32 IndexOfSlot);

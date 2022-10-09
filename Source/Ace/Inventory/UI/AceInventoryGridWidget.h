@@ -24,17 +24,18 @@ public:
     void SortItems();
     void SortItems(int32 AtIndex);
     void DeleteItemFromWidget(UAceBaseItemObject* Item);
+    UFUNCTION()
+    void AddItemToGrid(UAceBaseItemObject* Item);
     
 protected:
     virtual void NativeOnInitialized() override;
 
-    UFUNCTION()
-    void AddItemToGrid(UAceBaseItemObject* Item);
+    virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=UI)
     TSubclassOf<UAceInventoryItemSlotWidget> ItemClass;
     
 private:
-    int32 SlotsInRow = 10;
+    int32 SlotsInRow = 9;
     TArray<UAceBaseItemObject*> Items;
 };

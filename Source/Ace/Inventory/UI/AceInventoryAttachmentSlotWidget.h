@@ -10,6 +10,7 @@
 class UImage;
 class UAceBaseItemObject;
 class UAceAttachmentItemObject;
+class UAceInventoryWeaponSlotWidget;
 
 UCLASS()
 class ACE_API UAceInventoryAttachmentSlotWidget : public UAceBaseWidget
@@ -19,9 +20,12 @@ class ACE_API UAceInventoryAttachmentSlotWidget : public UAceBaseWidget
 public:
     int32 WeaponIndex;
     
-    void SetIconAndSpawn(UAceAttachmentItemObject* AttachemntItemObject);
-    void SetIcon(UAceBaseItemObject* Attachemnt);
+    void SetIconAndSpawn(UAceAttachmentItemObject* AttachmentItemObject);
+    void SetIcon(UAceAttachmentItemObject* AttachmentItemObject);
     void ClearSlot();
+    virtual void ClearSlotAndDestroy(const bool DeleteInfoAboutAttachment = false) override;
+
+    UAceInventoryWeaponSlotWidget* OwnerWidget;
     
 protected:
     UPROPERTY(meta=(BindWidget))
@@ -34,8 +38,10 @@ protected:
     FName SocketName;
     
     virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+    virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+    virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
 
-    UAceBaseItemObject* ItemObject;
+    UAceAttachmentItemObject* ItemObject;
     
 private:
 };

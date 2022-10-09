@@ -7,6 +7,7 @@
 #include "Components/AceInventoryComponent.h"
 #include "Components/AceWeaponComponent.h"
 #include "Objects/AceBaseItemObject.h"
+#include "Objects/WeaponItemObject/AceARItemObject.h"
 #include "Player/AcePlayerCharacter.h"
 
 AAceBaseWeapon::AAceBaseWeapon()
@@ -38,7 +39,8 @@ void AAceBaseWeapon::MakeShot()
 
 void AAceBaseWeapon::SpawnStartAttachment()
 {
-    const AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
+    const AAcePlayerCharacter* Character = GetAceCharacter();
+    
     if (!GetWorld() && !WeaponMesh && !Character) return;
 
     if (Sight)
@@ -47,7 +49,8 @@ void AAceBaseWeapon::SpawnStartAttachment()
         AttachAttachmentToSocket(SpawnedSight, WeaponMesh, "Sight");
         SpawnedSight->SetOwner(GetOwner());
         CurrentAttachments.Sight = Cast<AAceBaseWeaponAttachment>(SpawnedSight);
-        Character->InventoryComponent->AddItem(SpawnedSight->GetItemObject());
+        CurrentAttachmentsItemObjects.Sight = Cast<UAceAttachmentItemObject>(SpawnedSight->GetItemObject());
+        //Character->InventoryComponent->AddItem(SpawnedSight->GetItemObject());
     }
     
     if (Silencer)
@@ -56,7 +59,8 @@ void AAceBaseWeapon::SpawnStartAttachment()
         AttachAttachmentToSocket(SpawnedSilencer, WeaponMesh, "Silencer");
         SpawnedSilencer->SetOwner(GetOwner());
         CurrentAttachments.Silencer = Cast<AAceBaseWeaponAttachment>(SpawnedSilencer);
-        Character->InventoryComponent->AddItem(SpawnedSilencer->GetItemObject()); 
+        CurrentAttachmentsItemObjects.Silencer = Cast<UAceAttachmentItemObject>(SpawnedSilencer->GetItemObject());
+        //Character->InventoryComponent->AddItem(SpawnedSilencer->GetItemObject()); 
     }
     
     if (Grip)
@@ -65,7 +69,8 @@ void AAceBaseWeapon::SpawnStartAttachment()
         AttachAttachmentToSocket(SpawnedGrip, WeaponMesh, "Grip");
         SpawnedGrip->SetOwner(GetOwner());
         CurrentAttachments.Grip = Cast<AAceBaseWeaponAttachment>(SpawnedGrip);
-        Character->InventoryComponent->AddItem(SpawnedGrip->GetItemObject()); 
+        CurrentAttachmentsItemObjects.Grip = Cast<UAceAttachmentItemObject>(SpawnedGrip->GetItemObject());
+        //Character->InventoryComponent->AddItem(SpawnedGrip->GetItemObject()); 
     }
 
     UpdateItemObject();
@@ -74,7 +79,7 @@ void AAceBaseWeapon::SpawnStartAttachment()
 void AAceBaseWeapon::SpawnAttachment(TSubclassOf<AAceBaseItem> Class, FName SocketName)
 {
     if (!GetOwner() || !Class) return;
-    const AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
+    const AAcePlayerCharacter* Character = GetAceCharacter();
     if (!Character) return;
     
     const auto Attachement = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Class);
@@ -84,45 +89,89 @@ void AAceBaseWeapon::SpawnAttachment(TSubclassOf<AAceBaseItem> Class, FName Sock
     Attachement->SetOwner(GetOwner());
 
     if (Attachement->AttachmentType == EAttachmentType::Sight)
+    {
         CurrentAttachments.Sight = Attachement;
+        CurrentAttachmentsItemObjects.Sight = Cast<UAceAttachmentItemObject>(Attachement->GetItemObject());
+    }
 
     if (Attachement->AttachmentType == EAttachmentType::Grip)
+    {
         CurrentAttachments.Grip = Attachement;
+        CurrentAttachmentsItemObjects.Grip = Cast<UAceAttachmentItemObject>(Attachement->GetItemObject());
+    }
 
     if (Attachement->AttachmentType == EAttachmentType::Silencer)
+    {
         CurrentAttachments.Silencer = Attachement;
+        CurrentAttachmentsItemObjects.Silencer = Cast<UAceAttachmentItemObject>(Attachement->GetItemObject());
+    }
 
     Character->WeaponComponent->UpdateWeaponInfo();
 }
 
-void AAceBaseWeapon::SpawnAttachmentsFromItemObject(FAttachmentsReferences Attachments)
+void AAceBaseWeapon::DestroyAttachment(UAceAttachmentItemObject* AttachmentItemObject)
 {
-    const AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
+    if (!AttachmentItemObject) return;
+
+    const AAcePlayerCharacter* Character = GetAceCharacter();
+    if (!Character) return;
+    
+    switch (AttachmentItemObject->AttachmentType)
+    {
+    case EAttachmentType::Grip:
+        CurrentAttachments.Grip->Destroy();
+        CurrentAttachments.Grip = nullptr;
+        CurrentAttachmentsItemObjects.Grip = nullptr;
+        break;
+
+    case EAttachmentType::Sight:
+        CurrentAttachments.Sight->Destroy();
+        CurrentAttachments.Sight = nullptr;
+        CurrentAttachmentsItemObjects.Sight = nullptr;
+        break;
+
+    case EAttachmentType::Silencer:
+        CurrentAttachments.Silencer->Destroy();
+        CurrentAttachments.Silencer = nullptr;
+        CurrentAttachmentsItemObjects.Silencer = nullptr;
+        break;
+    }
+    
+    Character->WeaponComponent->UpdateWeaponInfo();
+}
+
+void AAceBaseWeapon::SpawnAttachmentsFromItemObject(FAttachmentsItemObjects Attachments)
+{
+    const AAcePlayerCharacter* Character = GetAceCharacter();
     if (!Character) return;
     
     if (Attachments.Sight)
     {
-        const auto SpawnedSight = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Attachments.Sight->GetItemObject()->GetObjectClass());
+        const auto SpawnedSight = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Attachments.Sight->GetObjectClass());
         AttachAttachmentToSocket(SpawnedSight, WeaponMesh, "Sight");
         SpawnedSight->SetOwner(GetOwner());
         CurrentAttachments.Sight = Cast<AAceBaseWeaponAttachment>(SpawnedSight);
+        CurrentAttachmentsItemObjects.Sight = Attachments.Sight;
     }
     
     if (Attachments.Silencer)
     {
-        const auto SpawnedSilencer = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Attachments.Silencer->GetItemObject()->GetObjectClass());
+        const auto SpawnedSilencer = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Attachments.Silencer->GetObjectClass());
         AttachAttachmentToSocket(SpawnedSilencer, WeaponMesh, "Silencer");
         SpawnedSilencer->SetOwner(GetOwner());
         CurrentAttachments.Silencer = Cast<AAceBaseWeaponAttachment>(SpawnedSilencer);
+        CurrentAttachmentsItemObjects.Silencer = Attachments.Silencer;
     }
     
     if (Attachments.Grip)
     {
-        const auto SpawnedGrip = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Attachments.Grip->GetItemObject()->GetObjectClass());
+        const auto SpawnedGrip = GetWorld()->SpawnActor<AAceBaseWeaponAttachment>(Attachments.Grip->GetObjectClass());
         AttachAttachmentToSocket(SpawnedGrip, WeaponMesh, "Grip");
         SpawnedGrip->SetOwner(GetOwner());
         CurrentAttachments.Grip = Cast<AAceBaseWeaponAttachment>(SpawnedGrip);
+        CurrentAttachmentsItemObjects.Grip = Attachments.Grip;
     }
+    
     Character->WeaponComponent->UpdateWeaponInfo();
 }
 
@@ -192,12 +241,12 @@ bool AAceBaseWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd, FVecto
 
 bool AAceBaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const
 {
-    const auto AceCharacter = Cast<AAceBaseCharacter>(GetOwner());
-    if (!AceCharacter) return false;
+    const AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
+    if (!Character) return false;
 
-    if (AceCharacter->IsPlayerControlled())
+    if (Character->IsPlayerControlled())
     {
-        const auto Controller = AceCharacter->GetController<APlayerController>();
+        const auto Controller = Character->GetController<APlayerController>();
         if (!Controller) return false;
 
         Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
@@ -248,8 +297,18 @@ bool AAceBaseWeapon::IsClipEmpty() const
     return CurrentAmmo.Bullets == 0;   
 }
 
+AAcePlayerCharacter* AAceBaseWeapon::GetAceCharacter()
+{
+    AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
+    
+    if (Character)
+        return Character;
+    else
+        return nullptr;
+}
+
 void AAceBaseWeapon::AttachAttachmentToSocket(AAceBaseWeaponAttachment* Attachment, USceneComponent* SceneComponent,
-    const FName SocketName)
+                                              const FName SocketName)
 {
     if (!Attachment || !SceneComponent) return;
 

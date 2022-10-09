@@ -71,6 +71,12 @@ protected:
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
     FTransform RelativeHandTransform;
+
+    /*//test
+    void test();
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    FTransform testtt1;
+    //test*/
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
     FTransform SidesWeaponSway;

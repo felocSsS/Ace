@@ -2,6 +2,7 @@
 
 #include "Items/Weapons/AceInteractableRifle.h"
 #include "Objects/WeaponItemObject/AceARItemObject.h"
+#include "Weapon/AceBaseWeapon.h"
 
 void AAceInteractableRifle::GetDefaultItemObject()
 {

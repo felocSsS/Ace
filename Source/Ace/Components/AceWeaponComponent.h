@@ -50,17 +50,16 @@ public:
     void AddWeapon(UAceARItemObject* Item, int32 AtIndex);
     void UpdateWeaponInfo() const { return UpdateWeaponInfoDelegate.Broadcast(); } 
     AAceBaseWeapon* GetWeaponAtIndex(int32 Index);
+    void DestoyWeapon(int32 Index);
     
 protected:
 	virtual void BeginPlay() override;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Weapon")
-    AAceBaseWeapon* CurrentWeapon;
-    
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
     TArray<FWeaponData> StartWeapons;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
+    
+    AAceBaseWeapon* CurrentWeapon;
+    
     TArray<AAceBaseWeapon*> Weapons;
 
     int32 CurrentWeaponIndex;

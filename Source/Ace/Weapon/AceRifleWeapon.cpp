@@ -87,7 +87,7 @@ void AAceRifleWeapon::UpdateItemObject()
     }
     else
     {
-        Cast<UAceARItemObject>(ItemObject)->CurrentAttachemnts = CurrentAttachments;
+        Cast<UAceARItemObject>(ItemObject)->CurrentAttachemntsItemObjects = CurrentAttachmentsItemObjects;
     }
 }
 
@@ -116,7 +116,7 @@ void AAceRifleWeapon::GetDefaultItemObject()
     NewItemObject->IsASightAvailable = IsASightAvailable;
     NewItemObject->IsAGripAvailable = IsAGripAvailable;
     NewItemObject->IsASilencerAvailable = IsASilencerAvailable;
-    NewItemObject->CurrentAttachemnts = CurrentAttachments;
+    NewItemObject->CurrentAttachemntsItemObjects = CurrentAttachmentsItemObjects;
     
     ItemObject = NewItemObject;
 }

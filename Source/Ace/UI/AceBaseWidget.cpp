@@ -12,3 +12,7 @@ void UAceBaseWidget::NativeOnInitialized()
     CharacterController = Cast<APlayerController>(Character->GetController());
     HUD = Cast<AAceGameHUD>(CharacterController->GetHUD());
 }
+
+void UAceBaseWidget::ClearSlotAndDestroy(const bool DeleteInfoAboutAttachment)
+{
+}

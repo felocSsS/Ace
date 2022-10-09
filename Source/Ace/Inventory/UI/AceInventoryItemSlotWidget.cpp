@@ -4,6 +4,7 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Objects/AceBaseItemObject.h"
 #include "Components/Image.h"
+#include "Inventory/AceInventoryDragDropOperation.h"
 
 void UAceInventoryItemSlotWidget::OnItemSpawned(UAceBaseItemObject* Item)
 {
@@ -27,10 +28,11 @@ void UAceInventoryItemSlotWidget::NativeOnDragDetected(const FGeometry& InGeomet
 {
     Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 
-    const auto DragOperation = UWidgetBlueprintLibrary::CreateDragDropOperation(UDragDropOperation::StaticClass());
+    const auto DragOperation = Cast<UAceInventoryDragDropOperation>(UWidgetBlueprintLibrary::CreateDragDropOperation(UAceInventoryDragDropOperation::StaticClass()));
     DragOperation->Payload = ItemObject;
     DragOperation->DefaultDragVisual = this;
     DragOperation->Pivot = EDragPivot::CenterCenter;
+    DragOperation->WidgetFrom = this;
 
     OutOperation = DragOperation;
 }

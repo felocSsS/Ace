@@ -15,7 +15,8 @@ class ACE_API UAceBaseWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
+    virtual void ClearSlotAndDestroy(const bool DeleteInfoAboutAttachment = false);
+    
 protected:
     virtual void NativeOnInitialized() override;
 
