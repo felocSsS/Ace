@@ -49,7 +49,8 @@ public:
 
 protected:
     virtual void BeginPlay() override;
-
+    virtual void OnGroundLanded(const FHitResult& Hit) override;
+    
     UPROPERTY(BlueprintReadOnly, Category="Anim")
     UAcePlayerAnimInstance* AnimInstance;
 
@@ -62,6 +63,7 @@ private:
     void GetTraceData(FVector& TraceStart, FVector& TraceEnd);
     void PickUpItem();
     void OpenInventory();
+    void AceJump();
 
     bool ItemDirty;
     

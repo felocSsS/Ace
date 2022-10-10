@@ -22,6 +22,8 @@ public:
     FTransform RecoilTransform;
 
     void Fire();
+    void StartJump();
+    void FinishJump();
     
     float MoveRightValue;
     float MoveForwardValue;
@@ -71,12 +73,6 @@ protected:
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
     FTransform RelativeHandTransform;
-
-    /*//test
-    void test();
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
-    FTransform testtt1;
-    //test*/
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
     FTransform SidesWeaponSway;
@@ -88,14 +84,26 @@ protected:
     FVector WalkSwayLocation;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    FTransform JumpTransform;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
     UCurveVector* WalkCurve;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
     UCurveVector* MoveInSidesCurve;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UCurveVector* JumpStartCurve;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UCurveVector* JumpEndCurve;
     
     UAceWeaponComponent* WeaponComponent;
 
     APlayerController* PlayerController;
+
+    float JumpPosition;
+    float Test;
     
     FRotator ActualRotation;
     FRotator OldTurnRotation;
@@ -111,14 +119,31 @@ private:
     void SetTurnWeaponSway(float DeltaSeconds);
     void GetLeftHandTransform();
     void GetRelativeRightHandTransform();
+    void SetJumpShake(float DeltaSeconds);
     
     void InterpFinalRecoil(float DeltaSeconds);
     void InterpRecoil(float DeltaSeconds);
-    
-    UFUNCTION()
-    void TimelineUpdate(FVector MoveVector);
 
-    FTimeline TimeLine;
+    void ResetJumpTimeline(); 
+
+    #pragma region TimelineCode
+
+    FTimeline TimeLineForModeInSides;
+    FTimeline TimeLineForJump;
+    
+
+    FOnTimelineVector UpdateForModeInSides;
+    FOnTimelineVector UpdateForJump;
+
+    UFUNCTION()
+    void TimeLineForWalkUpdate(FVector MoveVector);
+
+    UFUNCTION()
+    void TimeLineForJumpUpdate(FVector JumpVector);
+
+    #pragma endregion TimelineCode
+
+    FTimerHandle TimerForJumpTimelineReset;
     
     FTransform GetSocketTransform(USceneComponent* Object, FName Socket);
 };

@@ -56,6 +56,7 @@ void AAcePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
     PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &UAceWeaponComponent::Reload);
     PlayerInputComponent->BindAction("PickUp", IE_Pressed, this, &AAcePlayerCharacter::PickUpItem);
     PlayerInputComponent->BindAction("ToggleInventory", IE_Pressed, this, &AAcePlayerCharacter::OpenInventory);
+    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AAcePlayerCharacter::AceJump);
 }
 
 void AAcePlayerCharacter::Tick(float DeltaSeconds)
@@ -126,6 +127,20 @@ void AAcePlayerCharacter::OpenInventory()
     GameHUD->ToggleInventory();
 }
 
+void AAcePlayerCharacter::AceJump()
+{
+    Jump();
+    AnimInstance->StartJump();
+    // TODO 
+}
+
+void AAcePlayerCharacter::OnGroundLanded(const FHitResult& Hit)
+{
+    Super::OnGroundLanded(Hit);
+
+    AnimInstance->FinishJump();
+}
+
 void AAcePlayerCharacter::MoveForward(float Value)
 {
 	if (Value == 0.0f)
@@ -168,6 +183,7 @@ void AAcePlayerCharacter::Aim()
     GetMesh()->SetTickGroup(TG_PostUpdateWork);
     if (AnimInstance)
         AnimInstance->ShakingModifier = 0.1;
+    CameraComponent->FieldOfView = 60.0f;
 }
 
 void AAcePlayerCharacter::ResetAim()
@@ -176,4 +192,5 @@ void AAcePlayerCharacter::ResetAim()
     GetMesh()->SetTickGroup(TG_PrePhysics);
     if (AnimInstance)
         AnimInstance->ShakingModifier = 1.0f;
+    CameraComponent->FieldOfView = 90.0f;
 }

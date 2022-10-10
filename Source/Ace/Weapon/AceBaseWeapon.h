@@ -62,6 +62,8 @@ public:
     void SpawnAttachmentsFromItemObject(FAttachmentsItemObjects Attachments);
     void DestroyWeapon();
     
+    UCurveVector* GetRecoilCurve() { return RecoilCurve; }
+    
     FTransform GetSightTransform() const;
     FTransform GetGripTransform() const;
 
@@ -97,6 +99,9 @@ protected:
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category= "Weapon")
     float TraceMaxDistance = 15000.0f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
+    UCurveVector* RecoilCurve;
 
     void DecreaseAmmo();
     void MakeMultiHit(TArray<FHitResult>& HitResult, const FVector& TraceStart, const FVector& TraceEnd);

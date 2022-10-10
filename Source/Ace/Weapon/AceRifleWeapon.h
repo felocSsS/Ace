@@ -22,13 +22,10 @@ public:
     virtual void StartFire() override;
     virtual void StopFire() override;
     virtual void Tick(float DeltaSeconds) override;
-    
+
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
     float TimeBetweenShots = 0.085f;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
-    UCurveVector* RecoilCurve;
     
     virtual void BeginPlay() override;
     virtual void MakeShot() override;
@@ -37,6 +34,7 @@ protected:
     
     UPROPERTY(BlueprintReadOnly, Category="Anim")
     UAcePlayerAnimInstance* AnimInstance;
+    
 private:
     FTimerHandle ShotTimerHandle;
     FTimeline TimeLine;

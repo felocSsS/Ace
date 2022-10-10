@@ -29,7 +29,10 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
     UAceHealthComponent* HealthComponent;
+
+    UFUNCTION()
+    virtual void OnGroundLanded(const FHitResult& Hit);
     
 private:
-	
+    
 };

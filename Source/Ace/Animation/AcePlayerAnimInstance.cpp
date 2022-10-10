@@ -28,18 +28,20 @@ void UAcePlayerAnimInstance::NativeBeginPlay()
     WeaponComponent->UpdateWeaponInfoDelegate.AddDynamic(this, &UAcePlayerAnimInstance::UpdateInfo);
     OldTurnRotation = Character->GetControlRotation();
     
-    if (!MoveInSidesCurve) return;
-    
-	FOnTimelineVector Update;
-    Update.BindUFunction(this, "TimelineUpdate");
-    TimeLine.AddInterpVector(MoveInSidesCurve, Update);
+    if (MoveInSidesCurve)
+    {
+        UpdateForModeInSides.BindUFunction(this, "TimeLineForWalkUpdate");
+        TimeLineForModeInSides.AddInterpVector(MoveInSidesCurve, UpdateForModeInSides);
+    }
+
+    UpdateForJump.BindUFunction(this, "TimeLineForJumpUpdate");
+    TimeLineForJump.AddInterpVector(JumpStartCurve, UpdateForJump, NAME_None, "Track1");
 }
 
 void UAcePlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
     Super::NativeUpdateAnimation(DeltaSeconds);
-
-    //test();
+    
     SetCharacterVars();
     SetAimOffset();
     SetRelativeCameraTransform();
@@ -47,19 +49,66 @@ void UAcePlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     SetWalkWeaponSway(DeltaSeconds);
     SetMoveInSides(DeltaSeconds);
     SetTurnWeaponSway(DeltaSeconds);
-    TimeLine.TickTimeline(DeltaSeconds);
-
+    SetJumpShake(DeltaSeconds);
+    TimeLineForModeInSides.TickTimeline(DeltaSeconds);
+    TimeLineForJump.TickTimeline(DeltaSeconds);
+    
     InterpRecoil(DeltaSeconds);
     InterpFinalRecoil(DeltaSeconds);
 
     if (bIsMovingRight || bIsMovingForward)
-        TimeLine.Play();
+        TimeLineForModeInSides.Play();
     else
-    {    
-        TimeLine.Reverse();
-        TimeLine.SetNewTime(0.0f);
+    {
+        TimeLineForModeInSides.Reverse();
+        TimeLineForModeInSides.SetNewTime(0.0f);
     }
 }
+
+#pragma region TimelineCode
+
+void UAcePlayerAnimInstance::TimeLineForWalkUpdate(FVector MoveVector)
+{
+    FVector Translation = FVector();
+    FRotator Rotation = FRotator();
+    
+    if (bIsMovingRight)
+    {
+        Translation.Y = MoveVector.X * -MoveRightValue;
+        Translation.Y *= ShakingModifier;
+        Rotation.Roll = MoveVector.Y * MoveRightValue;
+        Rotation.Roll *= ShakingModifier;
+
+    }
+    else
+    {
+        Translation.Y = 0.0f;
+        Rotation.Roll = 0.0f;
+    }
+
+    if (bIsMovingForward)
+    {
+        Translation.X = MoveVector.X * -MoveForwardValue;
+        Translation.X *= ShakingModifier;
+    }
+    else
+    {
+        Translation.X = 0.0f;
+    }
+    
+    Translation.Z = 0.0f;
+    Rotation.Pitch = 0.0f;
+    
+    MoveInSidesSway.SetTranslation(Translation);
+    MoveInSidesSway.SetRotation(Rotation.Quaternion());
+}
+
+void UAcePlayerAnimInstance::TimeLineForJumpUpdate(FVector JumpVector)
+{
+    JumpPosition = JumpVector.Z;
+}
+
+#pragma endregion TimelineCode
 
 void UAcePlayerAnimInstance::SetCharacterVars()
 {
@@ -99,7 +148,7 @@ void UAcePlayerAnimInstance::SetWalkWeaponSway(float DeltaSeconds)
     
     const FVector CurveValue =  WalkCurve->GetVectorValue(Character->GetGameTimeSinceCreation());
     WalkSwayLocation = UKismetMathLibrary::VInterpTo(WalkSwayLocation, CurveValue, DeltaSeconds, 10.0f);
-    WalkSwayLocation *= Velocity;
+    WalkSwayLocation = WalkSwayLocation * Velocity;
 }
 
 void UAcePlayerAnimInstance::SetTurnWeaponSway(float DeltaSeconds)
@@ -122,42 +171,6 @@ void UAcePlayerAnimInstance::SetTurnWeaponSway(float DeltaSeconds)
 void UAcePlayerAnimInstance::SetMoveInSides(float DeltaSeconds)
 {
     SidesWeaponSway = UKismetMathLibrary::TInterpTo(SidesWeaponSway, MoveInSidesSway, DeltaSeconds, 5.0f);
-}
-
-void UAcePlayerAnimInstance::TimelineUpdate(FVector MoveVector)
-{
-    FVector Translation = FVector();
-    FRotator Rotation = FRotator();
-    
-    if (bIsMovingRight)
-    {
-        Translation.Y = MoveVector.X * -MoveRightValue;
-        Translation.Y *= ShakingModifier;
-        Rotation.Roll = MoveVector.Y * MoveRightValue;
-        Rotation.Roll *= ShakingModifier;
-
-    }
-    else
-    {
-        Translation.Y = 0.0f;
-        Rotation.Roll = 0.0f;
-    }
-
-    if (bIsMovingForward)
-    {
-        Translation.X = MoveVector.X * -MoveForwardValue;
-        Translation.X *= ShakingModifier;
-    }
-    else
-    {
-        Translation.X = 0.0f;
-    }
-    
-    Translation.Z = 0.0f;
-    Rotation.Pitch = 0.0f;
-    
-    MoveInSidesSway.SetTranslation(Translation);
-    MoveInSidesSway.SetRotation(Rotation.Quaternion());
 }
 
 void UAcePlayerAnimInstance::SetRelativeCameraTransform()
@@ -185,16 +198,6 @@ void UAcePlayerAnimInstance::UpdateInfo()
     GetLeftHandTransform();
 }
 
-/*void UAcePlayerAnimInstance::test()
-{
-    if(!Character) return;
-    auto test1 = RelativeHandTransform * Character->GetMesh()->GetSocketTransform("hand_r");
-    auto test2 = FTransform() * Character->GetMesh()->GetSocketTransform("head");
-    auto test3 = FTransform( FRotator(0.0f, 0.0f, 90.0f).Quaternion(), test2.GetLocation());
-    auto test4 = UKismetMathLibrary::MakeRelativeTransform(test1, test3);
-    testtt1 = test4 * RelativeCameraTransform;
-}*/
-
 void UAcePlayerAnimInstance::GetLeftHandTransform()
 {
     if (!CurrentWeapon || !CurrentWeapon->WeaponMesh || !Character || !Character->GetMesh()) return;
@@ -216,11 +219,37 @@ void UAcePlayerAnimInstance::GetRelativeRightHandTransform()
     RelativeHandTransform = UKismetMathLibrary::MakeRelativeTransform(AimSocketTransform, RightHandTransform);
 }
 
+void UAcePlayerAnimInstance::SetJumpShake(float DeltaSeconds)
+{
+    Test = UKismetMathLibrary::FInterpTo(Test, JumpPosition, DeltaSeconds, 20.0f);
+    JumpTransform.SetTranslation(FVector(0.0f, 0.0f, Test));
+}
+
 void UAcePlayerAnimInstance::Fire()
 {
     FVector RecoilLoc = FinalRecoilTransform.GetLocation();
     RecoilLoc.X += FMath::RandRange(8.0f, 13.0f);
     FinalRecoilTransform.SetLocation(-RecoilLoc); 
+}
+
+void UAcePlayerAnimInstance::StartJump()
+{
+    TimeLineForJump.Play();
+}
+
+void UAcePlayerAnimInstance::FinishJump()
+{
+    TimeLineForJump.SetVectorCurve(JumpEndCurve, "Track1");
+    TimeLineForJump.SetNewTime(0.0f);
+    TimeLineForJump.Play();
+    GetWorld()->GetTimerManager().SetTimer(TimerForJumpTimelineReset, this, &UAcePlayerAnimInstance::ResetJumpTimeline, 0.3f /*hardcode*/, false);
+}
+
+void UAcePlayerAnimInstance::ResetJumpTimeline()
+{
+    TimeLineForJump.SetVectorCurve(JumpStartCurve, "Track1");
+    TimeLineForJump.Stop();
+    TimeLineForJump.SetNewTime(0.0f);
 }
 
 void UAcePlayerAnimInstance::InterpFinalRecoil(float DeltaSeconds)

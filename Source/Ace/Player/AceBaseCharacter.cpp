@@ -17,7 +17,13 @@ AAceBaseCharacter::AAceBaseCharacter()
 void AAceBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+    LandedDelegate.AddDynamic(this, &AAceBaseCharacter::OnGroundLanded);
+}
+
+void AAceBaseCharacter::OnGroundLanded(const FHitResult& Hit)
+{
+    
 }
 
 float AAceBaseCharacter::GetCharacterVelocity() const

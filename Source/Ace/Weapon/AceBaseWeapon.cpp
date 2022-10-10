@@ -325,9 +325,3 @@ bool AAceBaseWeapon::CanReload() const
 {
     return CurrentAmmo.Bullets < DefaultAmmo.Bullets && CurrentAmmo.Clips > 0;
 }
-
-
-
-
-
-

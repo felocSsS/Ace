@@ -33,7 +33,8 @@ void AAceRifleWeapon::StartFire()
 {
     GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &AAceRifleWeapon::MakeShot, TimeBetweenShots, true);
     MakeShot();
-    TimeLine.Play();
+    if (!IsAmmoEmpty() && !IsClipEmpty())
+        TimeLine.Play();
 }
 
 void AAceRifleWeapon::StopFire()
@@ -45,7 +46,7 @@ void AAceRifleWeapon::StopFire()
 
 void AAceRifleWeapon::MakeShot()
 {
-    if (!GetWorld() || IsAmmoEmpty())
+    if (!GetWorld() || IsAmmoEmpty() || IsClipEmpty())
     {
         StopFire();
         return;
@@ -135,4 +136,3 @@ AController* AAceRifleWeapon::GetController() const
     const APawn* Pawn = Cast<APawn>(GetOwner());
     return Pawn ? Pawn->GetController() : nullptr;
 }
-
