@@ -6,7 +6,7 @@
 
 AAceBaseItem::AAceBaseItem()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void AAceBaseItem::BeginPlay()

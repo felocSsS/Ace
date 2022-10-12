@@ -24,6 +24,8 @@ public:
     void Fire();
     void StartJump();
     void FinishJump();
+    void StartShooting();
+    void EndShooting();
     
     float MoveRightValue;
     float MoveForwardValue;
@@ -130,16 +132,20 @@ private:
 
     FTimeline TimeLineForModeInSides;
     FTimeline TimeLineForJump;
+    FTimeline TimelineForRecoil;
     
-
     FOnTimelineVector UpdateForModeInSides;
     FOnTimelineVector UpdateForJump;
+    FOnTimelineVector UpdateForRecoil;
 
     UFUNCTION()
     void TimeLineForWalkUpdate(FVector MoveVector);
 
     UFUNCTION()
     void TimeLineForJumpUpdate(FVector JumpVector);
+
+    UFUNCTION()
+    void TimeLineForRecoilUpdate(FVector RecoilVector);
 
     #pragma endregion TimelineCode
 

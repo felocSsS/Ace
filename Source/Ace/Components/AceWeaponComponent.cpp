@@ -1,8 +1,9 @@
 // Ace Game. All Rights Reserved.
 
 #include "Components/AceWeaponComponent.h"
+
+#include "Animation/AcePlayerAnimInstance.h"
 #include "Items/AceBaseItem.h"
-#include "AceInventoryComponent.h"
 #include "GameFramework/Character.h"
 #include "Objects/AceBaseItemObject.h"
 #include "Player/AcePlayerCharacter.h"
@@ -23,12 +24,11 @@ void UAceWeaponComponent::BeginPlay()
     CurrentWeaponIndex = 0;
     SpawnStartWeapons();
     EquipWeapon(CurrentWeaponIndex);
+    Character = Cast<AAcePlayerCharacter>(GetOwner());
 }
 
 void UAceWeaponComponent::SpawnStartWeapons()
 {
-    AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
-    
     if(!Character || !GetWorld()) return;
 
     for (int32 i = 0; i < StartWeapons.Num(); ++i)
@@ -49,10 +49,7 @@ void UAceWeaponComponent::SpawnStartWeapons()
 
 void UAceWeaponComponent::EquipWeapon(int32 WeaponIndex)
 {
-    if (WeaponIndex < 0 || !Weapons.IsValidIndex(WeaponIndex) || !Weapons[WeaponIndex]) return;
-
-    const ACharacter* Character = Cast<ACharacter>(GetOwner());
-    if (!Character) return;
+    if (WeaponIndex < 0 || !Weapons.IsValidIndex(WeaponIndex) || !Weapons[WeaponIndex] || !Character) return;
 
     if (CurrentWeapon)
     {
@@ -65,10 +62,7 @@ void UAceWeaponComponent::EquipWeapon(int32 WeaponIndex)
 
 void UAceWeaponComponent::AddWeapon(UAceARItemObject* Item, int32 AtIndex)
 {
-    if (!Item || !GetWorld()) return;
-
-    AAcePlayerCharacter* Character = Cast<AAcePlayerCharacter>(GetOwner());
-    if (!Character) return;
+    if (!Item || !GetWorld() || !Character) return;
     
     const auto Weapon = GetWorld()->SpawnActor<AAceBaseWeapon>(Item->GetObjectClass());
     if (!Weapon) return;

@@ -51,7 +51,6 @@ protected:
     virtual void BeginPlay() override;
     virtual void OnGroundLanded(const FHitResult& Hit) override;
     
-    UPROPERTY(BlueprintReadOnly, Category="Anim")
     UAcePlayerAnimInstance* AnimInstance;
 
 private:

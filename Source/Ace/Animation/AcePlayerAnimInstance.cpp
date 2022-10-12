@@ -36,6 +36,9 @@ void UAcePlayerAnimInstance::NativeBeginPlay()
 
     UpdateForJump.BindUFunction(this, "TimeLineForJumpUpdate");
     TimeLineForJump.AddInterpVector(JumpStartCurve, UpdateForJump, NAME_None, "Track1");
+
+    UpdateForRecoil.BindUFunction(this, "TimeLineForRecoilUpdate");
+    TimelineForRecoil.AddInterpVector(nullptr, UpdateForRecoil, NAME_None, "Track1");
 }
 
 void UAcePlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -52,6 +55,7 @@ void UAcePlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     SetJumpShake(DeltaSeconds);
     TimeLineForModeInSides.TickTimeline(DeltaSeconds);
     TimeLineForJump.TickTimeline(DeltaSeconds);
+    TimelineForRecoil.TickTimeline(DeltaSeconds);
     
     InterpRecoil(DeltaSeconds);
     InterpFinalRecoil(DeltaSeconds);
@@ -106,6 +110,14 @@ void UAcePlayerAnimInstance::TimeLineForWalkUpdate(FVector MoveVector)
 void UAcePlayerAnimInstance::TimeLineForJumpUpdate(FVector JumpVector)
 {
     JumpPosition = JumpVector.Z;
+}
+
+void UAcePlayerAnimInstance::TimeLineForRecoilUpdate(FVector RecoilVector)
+{
+    if (!PlayerController) return;
+    
+    PlayerController->AddPitchInput(-RecoilVector.Y);
+    PlayerController->AddYawInput(RecoilVector.X);
 }
 
 #pragma endregion TimelineCode
@@ -188,6 +200,7 @@ void UAcePlayerAnimInstance::SetRelativeCameraTransform()
 void UAcePlayerAnimInstance::WeaponChanged(AAceBaseWeapon* NewWeapon)
 {
     CurrentWeapon = NewWeapon;
+    TimelineForRecoil.SetVectorCurve(CurrentWeapon->GetRecoilCurve(), "Track1");
     GetRelativeRightHandTransform();
     GetLeftHandTransform();
 }
@@ -234,6 +247,7 @@ void UAcePlayerAnimInstance::Fire()
 
 void UAcePlayerAnimInstance::StartJump()
 {
+    ResetJumpTimeline();
     TimeLineForJump.Play();
 }
 
@@ -242,7 +256,18 @@ void UAcePlayerAnimInstance::FinishJump()
     TimeLineForJump.SetVectorCurve(JumpEndCurve, "Track1");
     TimeLineForJump.SetNewTime(0.0f);
     TimeLineForJump.Play();
-    GetWorld()->GetTimerManager().SetTimer(TimerForJumpTimelineReset, this, &UAcePlayerAnimInstance::ResetJumpTimeline, 0.3f /*hardcode*/, false);
+    //GetWorld()->GetTimerManager().SetTimer(TimerForJumpTimelineReset, this, &UAcePlayerAnimInstance::ResetJumpTimeline, 0.3f /*hardcode*/, false);
+}
+
+void UAcePlayerAnimInstance::StartShooting()
+{
+    TimelineForRecoil.Play();
+}
+
+void UAcePlayerAnimInstance::EndShooting()
+{
+    TimelineForRecoil.Stop();
+    TimelineForRecoil.SetNewTime(0.0f);
 }
 
 void UAcePlayerAnimInstance::ResetJumpTimeline()

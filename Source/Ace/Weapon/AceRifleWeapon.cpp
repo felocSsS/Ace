@@ -2,46 +2,35 @@
 
 #include "Weapon/AceRifleWeapon.h"
 #include "Animation/AcePlayerAnimInstance.h"
-#include "Attachments/AceBaseWeaponAttachment.h"
-#include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "Objects/WeaponItemObject/AceARItemObject.h"
 
 void AAceRifleWeapon::BeginPlay()
 {
     Super::BeginPlay();
-    
-    FOnTimelineVector Update;
-    Update.BindUFunction(this, "TimelineUpdate");
-    TimeLine.AddInterpVector(RecoilCurve, Update);
+
+    GetWorldTimerManager().SetTimerForNextTick(this, &AAceRifleWeapon::SetAnimInstance);
 }
 
-void AAceRifleWeapon::Tick(float DeltaSeconds)
+void AAceRifleWeapon::SetAnimInstance()
 {
-    Super::Tick(DeltaSeconds);
-    TimeLine.TickTimeline(DeltaSeconds);
-    
-    if(!Character)
-    {
-        Character = Cast<ACharacter>(GetOwner());
-        if(Character)
-            AnimInstance = Cast<UAcePlayerAnimInstance>(Character->GetMesh()->GetAnimInstance());   
-    }
+    Character = Cast<ACharacter>(GetOwner());
+    AnimInstance = Cast<UAcePlayerAnimInstance>(Character->GetMesh()->GetAnimInstance()); 
 }
 
 void AAceRifleWeapon::StartFire()
 {
     GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &AAceRifleWeapon::MakeShot, TimeBetweenShots, true);
     MakeShot();
-    if (!IsAmmoEmpty() && !IsClipEmpty())
-        TimeLine.Play();
+    if (!IsAmmoEmpty() && !IsClipEmpty() && AnimInstance)
+        AnimInstance->StartShooting();
 }
 
 void AAceRifleWeapon::StopFire()
 {
     GetWorldTimerManager().ClearTimer(ShotTimerHandle);
-    TimeLine.Stop();
-    TimeLine.SetNewTime(0.0f);
+    if (AnimInstance)
+        AnimInstance->EndShooting();
 }
 
 void AAceRifleWeapon::MakeShot()
@@ -122,14 +111,14 @@ void AAceRifleWeapon::GetDefaultItemObject()
     ItemObject = NewItemObject;
 }
 
-void AAceRifleWeapon::TimelineUpdate(const FVector RecoilVector) const
+/*void AAceRifleWeapon::TimelineUpdate(const FVector RecoilVector) const
 {
     const auto Controller = Cast<APlayerController>(GetController());
     if (!Controller) return;
     
     Controller->AddPitchInput(-RecoilVector.Y);
     Controller->AddYawInput(RecoilVector.X);
-}
+}*/
 
 AController* AAceRifleWeapon::GetController() const
 {

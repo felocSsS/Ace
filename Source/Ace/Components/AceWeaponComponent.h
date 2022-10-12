@@ -10,6 +10,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCurrentWeaponChangedDelegate, class
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUpdateWeaponInfoDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNotyfyWidgetAboutAddingWeapon, class UAceBaseItemObject*, Weapon, int32, Index);
 
+class AAcePlayerCharacter;
 class AAceBaseWeapon;
 class AAceBaseItem;
 class UAceBaseItemObject;
@@ -73,4 +74,6 @@ private:
     void AttachWeaponToSocket(AAceBaseWeapon* Weapon, USceneComponent* SceneComponent, const FName SocketName);
 
     bool CanReload() const;
+
+    AAcePlayerCharacter* Character;
 };

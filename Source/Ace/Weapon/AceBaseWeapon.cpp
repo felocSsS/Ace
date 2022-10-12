@@ -12,7 +12,7 @@
 
 AAceBaseWeapon::AAceBaseWeapon()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
     WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
     WeaponMesh->SetupAttachment(RootComponent);

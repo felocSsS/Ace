@@ -21,7 +21,6 @@ public:
 public:
     virtual void StartFire() override;
     virtual void StopFire() override;
-    virtual void Tick(float DeltaSeconds) override;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
@@ -36,11 +35,8 @@ protected:
     UAcePlayerAnimInstance* AnimInstance;
     
 private:
+    void SetAnimInstance();
     FTimerHandle ShotTimerHandle;
-    FTimeline TimeLine;
-    
-    UFUNCTION()
-    void TimelineUpdate(const FVector RecoilVector) const;
 
     virtual void GetDefaultItemObject() override;
     
