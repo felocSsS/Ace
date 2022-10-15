@@ -20,11 +20,11 @@ void UAceWeaponComponent::BeginPlay()
 	Super::BeginPlay();
 
     //Weapons.SetNum(2);
+    Character = Cast<AAcePlayerCharacter>(GetOwner());
     
     CurrentWeaponIndex = 0;
     SpawnStartWeapons();
     EquipWeapon(CurrentWeaponIndex);
-    Character = Cast<AAcePlayerCharacter>(GetOwner());
 }
 
 void UAceWeaponComponent::SpawnStartWeapons()

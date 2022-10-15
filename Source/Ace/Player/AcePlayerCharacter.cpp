@@ -10,7 +10,7 @@
 #include "Items/AceBaseInteractableItem.h"
 #include "UI/AceGameHUD.h"
 
-AAcePlayerCharacter::AAcePlayerCharacter()
+AAcePlayerCharacter::AAcePlayerCharacter(const FObjectInitializer& ObjInit) : Super(ObjInit)
 {
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(GetMesh(), "head");
@@ -57,6 +57,8 @@ void AAcePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
     PlayerInputComponent->BindAction("PickUp", IE_Pressed, this, &AAcePlayerCharacter::PickUpItem);
     PlayerInputComponent->BindAction("ToggleInventory", IE_Pressed, this, &AAcePlayerCharacter::OpenInventory);
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AAcePlayerCharacter::AceJump);
+    PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AAcePlayerCharacter::StartRunning);
+    PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AAcePlayerCharacter::StopRunning);
 }
 
 void AAcePlayerCharacter::Tick(float DeltaSeconds)
@@ -134,6 +136,24 @@ void AAcePlayerCharacter::AceJump()
     // TODO 
 }
 
+void AAcePlayerCharacter::StartRunning()
+{
+    WantsToRun = true;
+    if(IsRunning())
+        AnimInstance->StartRunning();
+}
+
+void AAcePlayerCharacter::StopRunning()
+{
+    WantsToRun = false;
+    AnimInstance->StopRunning();
+}
+
+bool AAcePlayerCharacter::IsRunning() const
+{
+    return WantsToRun && IsMovingForward && !GetVelocity().IsZero() && !IsAiming;
+}
+
 void AAcePlayerCharacter::OnGroundLanded(const FHitResult& Hit)
 {
     Super::OnGroundLanded(Hit);
@@ -146,7 +166,8 @@ void AAcePlayerCharacter::MoveForward(float Value)
 	if (Value == 0.0f)
 	{
 	    if (AnimInstance)
-	        AnimInstance->bIsMovingForward = false;   
+	        AnimInstance->bIsMovingForward = false;
+	    StopRunning();
 	}
     else
     {
@@ -154,9 +175,10 @@ void AAcePlayerCharacter::MoveForward(float Value)
         if (AnimInstance)
         {
             AnimInstance->MoveForwardValue = Value;
-            AnimInstance->bIsMovingForward = true;   
+            AnimInstance->bIsMovingForward = true;
         }
     }
+    IsMovingForward = Value > 0.0f;
 }
 
 void AAcePlayerCharacter::MoveRight(float Value)
@@ -183,7 +205,9 @@ void AAcePlayerCharacter::Aim()
     GetMesh()->SetTickGroup(TG_PostUpdateWork);
     if (AnimInstance)
         AnimInstance->ShakingModifier = 0.1;
-    CameraComponent->FieldOfView = 60.0f;
+    //CameraComponent->FieldOfView = 60.0f;
+    IsAiming = true;
+    StopRunning();
 }
 
 void AAcePlayerCharacter::ResetAim()
@@ -192,5 +216,6 @@ void AAcePlayerCharacter::ResetAim()
     GetMesh()->SetTickGroup(TG_PrePhysics);
     if (AnimInstance)
         AnimInstance->ShakingModifier = 1.0f;
-    CameraComponent->FieldOfView = 90.0f;
+    IsAiming = false;
+    //CameraComponent->FieldOfView = 90.0f;
 }

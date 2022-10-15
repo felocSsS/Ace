@@ -4,8 +4,10 @@
 #include "Player/AceBaseCharacter.h"
 #include "Components/AceWeaponComponent.h"
 #include "Components/AceHealthComponent.h"
+#include "Components/AceCharacterMovementComponent.h"
 
-AAceBaseCharacter::AAceBaseCharacter()
+AAceBaseCharacter::AAceBaseCharacter(const  FObjectInitializer& ObjInit) :
+    Super(ObjInit.SetDefaultSubobjectClass<UAceCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
 

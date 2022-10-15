@@ -22,11 +22,13 @@ class ACE_API AAcePlayerCharacter : public AAceBaseCharacter
 	GENERATED_BODY()
 
 public:
-	AAcePlayerCharacter();
+	AAcePlayerCharacter(const FObjectInitializer& ObjInit);
 	
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     virtual void Tick(float DeltaSeconds) override;
+
+    bool IsRunning() const;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
     UCameraComponent* CameraComponent;
@@ -63,8 +65,13 @@ private:
     void PickUpItem();
     void OpenInventory();
     void AceJump();
-
+    void StartRunning();
+    void StopRunning();
+    
     bool ItemDirty;
+    bool WantsToRun;
+    bool IsMovingForward;
+    bool IsAiming;
     
     AAceBaseInteractableItem* Item;
     AAceGameHUD* GameHUD;

@@ -11,6 +11,7 @@ class AAcePlayerCharacter;
 class AAceBaseWeapon;
 class UAceWeaponComponent;
 class UCurveVector;
+class UAceCharacterMovementComponent;
 
 UCLASS()
 class ACE_API UAcePlayerAnimInstance : public UAnimInstance
@@ -18,14 +19,13 @@ class ACE_API UAcePlayerAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 
 public:
-    UPROPERTY(BlueprintReadOnly, Category="Recoil")
-    FTransform RecoilTransform;
-
     void Fire();
     void StartJump();
     void FinishJump();
     void StartShooting();
     void EndShooting();
+    void StartRunning();
+    void StopRunning();
     
     float MoveRightValue;
     float MoveForwardValue;
@@ -34,78 +34,97 @@ public:
     bool bIsMovingRight = false;
     bool bIsMovingForward = false;
     
-    FTransform FinalRecoilTransform;
-    
 protected:
     virtual void NativeBeginPlay() override;
     virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
     UFUNCTION()
-    virtual void WeaponChanged(AAceBaseWeapon* NewWeapon);
+    void WeaponChanged(AAceBaseWeapon* NewWeapon);
 
     UFUNCTION()
     void UpdateInfo();
 
-    UPROPERTY(BlueprintReadOnly, Category="Character")
-    AAcePlayerCharacter* Character;
-    
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
-    AAceBaseWeapon* CurrentWeapon;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Anim")
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
     float CharacterVelocity;
     
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Anim")
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
     float Direction;
     
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Anim")
-    float ADSAlpha;
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
+    float CanAim;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Anim")
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
+    float CanEffect = 1.0f;
+
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
+    float CanRunning = 1.0f;
+
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
     FRotator AimOffsetRotation;
     
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Anim")
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
     FRotator FinalTurnRotation;
+
+    UPROPERTY(BlueprintReadOnly, Category="Recoil")
+    FTransform RecoilTransform;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
     FTransform RelativeCameraTransform;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
     FTransform LeftHandTransform;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
     FTransform RelativeHandTransform;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
     FTransform SidesWeaponSway;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
-    FTransform MoveInSidesSway;
-    
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
-    FVector WalkSwayLocation;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
     FTransform JumpTransform;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
+    FTransform RunTransform;
+    
+    UPROPERTY(BlueprintReadOnly, Category="Anim")
+    FVector WalkSwayLocation;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Anim")
     UCurveVector* WalkCurve;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Anim")
     UCurveVector* MoveInSidesCurve;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Anim")
     UCurveVector* JumpStartCurve;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim")
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Anim")
     UCurveVector* JumpEndCurve;
-    
-    UAceWeaponComponent* WeaponComponent;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Anim")
+    UCurveVector* RunVectorCurve;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Anim")
+    UCurveVector* RunRotatorCurve;
+
+    AAcePlayerCharacter* Character;
+    
     APlayerController* PlayerController;
 
+    UAceWeaponComponent* WeaponComponent;
+
+    UAceCharacterMovementComponent* MovementComponent;
+    
+    AAceBaseWeapon* CurrentWeapon;
+
     float JumpPosition;
-    float Test;
+    float ZPositionJumpTransform;
+    float IntermediateCanEffect = 1.0f;
+    float IntermediateCanRunning = 1.0f;
+
+    FTransform IntermediateRunTransform; // хз как "временная" на англ. 
+    FTransform MoveInSidesSway;
+    FTransform FinalRecoilTransform;
     
     FRotator ActualRotation;
     FRotator OldTurnRotation;
@@ -122,35 +141,46 @@ private:
     void GetLeftHandTransform();
     void GetRelativeRightHandTransform();
     void SetJumpShake(float DeltaSeconds);
-    
+    void SetRunTransform(float DeltaSeconds);
     void InterpFinalRecoil(float DeltaSeconds);
     void InterpRecoil(float DeltaSeconds);
+    void SetCanEffect(float DeltaSeconds);
+    void SetCanRunning(float DeltaSeconds);
+    void ResetJumpTimeline();
 
-    void ResetJumpTimeline(); 
 
     #pragma region TimelineCode
 
     FTimeline TimeLineForModeInSides;
     FTimeline TimeLineForJump;
     FTimeline TimelineForRecoil;
+    FTimeline TimelineForRun;
     
     FOnTimelineVector UpdateForModeInSides;
     FOnTimelineVector UpdateForJump;
     FOnTimelineVector UpdateForRecoil;
+    FOnTimelineVector UpdateForRun1;
+    FOnTimelineVector UpdateForRun2;
+
+    FOnTimelineEvent TickForRun;
 
     UFUNCTION()
-    void TimeLineForWalkUpdate(FVector MoveVector);
+    void TimeLineForWalkUpdate(const FVector MoveVector);
 
     UFUNCTION()
-    void TimeLineForJumpUpdate(FVector JumpVector);
+    void TimeLineForJumpUpdate(const FVector JumpVector);
 
     UFUNCTION()
-    void TimeLineForRecoilUpdate(FVector RecoilVector);
+    void TimeLineForRecoilUpdate(const FVector RecoilVector);
+
+    UFUNCTION()
+    void TimeLineForRunUpdate();
+
+    void RunUpdate(const FVector RunVector, const FVector RunRotator); 
 
     #pragma endregion TimelineCode
 
     FTimerHandle TimerForJumpTimelineReset;
     
-    FTransform GetSocketTransform(USceneComponent* Object, FName Socket);
+    FTransform GetSocketTransform(USceneComponent* Object, FName Socket) const;
 };
-

@@ -15,7 +15,7 @@ class ACE_API AAceBaseCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	AAceBaseCharacter();
+	AAceBaseCharacter(const FObjectInitializer& ObjInit);
 
 public:	
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
