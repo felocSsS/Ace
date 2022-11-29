@@ -2,7 +2,7 @@
 
 #include "Inventory/UI/AceInventoryItemSlotWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
-#include "Objects/AceBaseItemObject.h"
+#include "Items/Objects/AceBaseItemObject.h"
 #include "Components/Image.h"
 #include "Inventory/AceInventoryDragDropOperation.h"
 

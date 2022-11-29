@@ -5,10 +5,10 @@
 #include "Animation/AcePlayerAnimInstance.h"
 #include "Items/AceBaseItem.h"
 #include "GameFramework/Character.h"
-#include "Objects/AceBaseItemObject.h"
+#include "Items/Objects/AceBaseItemObject.h"
 #include "Player/AcePlayerCharacter.h"
 #include "Weapon/AceBaseWeapon.h"
-#include "Objects/WeaponItemObject/AceARItemObject.h"
+#include "Items/Objects/WeaponItemObject/AceARItemObject.h"
 
 UAceWeaponComponent::UAceWeaponComponent()
 {

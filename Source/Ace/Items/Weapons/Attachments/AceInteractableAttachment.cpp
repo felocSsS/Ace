@@ -1,7 +1,7 @@
 // Ace Game. All Rights Reserved.
 
 #include "Items/Weapons/Attachments/AceInteractableAttachment.h"
-#include "Objects/WeaponItemObject/Attachment/AceAttachmentItemObject.h"
+#include "Items/Objects/WeaponItemObject/Attachment/AceAttachmentItemObject.h"
 
 void AAceInteractableAttachment::GetDefaultItemObject()
 {

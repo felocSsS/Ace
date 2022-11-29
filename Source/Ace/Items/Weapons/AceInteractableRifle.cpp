@@ -1,7 +1,7 @@
 // Ace Game. All Rights Reserved.
 
 #include "Items/Weapons/AceInteractableRifle.h"
-#include "Objects/WeaponItemObject/AceARItemObject.h"
+#include "Items/Objects/WeaponItemObject/AceARItemObject.h"
 #include "Weapon/AceBaseWeapon.h"
 
 void AAceInteractableRifle::GetDefaultItemObject()

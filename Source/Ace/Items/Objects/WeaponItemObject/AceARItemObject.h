@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Attachment/AceAttachmentItemObject.h"
-#include "Objects/AceBaseItemObject.h"
+#include "Items/Objects/AceBaseItemObject.h"
 #include "AceARItemObject.generated.h"
 
 USTRUCT(BlueprintType)

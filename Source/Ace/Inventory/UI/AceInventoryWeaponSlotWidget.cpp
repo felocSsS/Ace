@@ -4,7 +4,7 @@
 #include "Blueprint/DragDropOperation.h"
 #include "Components/AceWeaponComponent.h"
 #include "Components/Image.h"
-#include "Objects/WeaponItemObject/AceARItemObject.h"
+#include "Items/Objects/WeaponItemObject/AceARItemObject.h"
 #include "Player/AcePlayerCharacter.h"
 #include "AceInventoryAttachmentSlotWidget.h"
 #include "AceInventoryWidget.h"
@@ -12,7 +12,7 @@
 #include "Inventory/UI/AceInventoryGridWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Inventory/AceInventoryDragDropOperation.h"
-#include "Objects/WeaponItemObject/Attachment/AceAttachmentItemObject.h"
+#include "Items/Objects/WeaponItemObject/Attachment/AceAttachmentItemObject.h"
 
 void UAceInventoryWeaponSlotWidget::NativeOnInitialized()
 {

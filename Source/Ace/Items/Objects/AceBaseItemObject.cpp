@@ -1,6 +1,6 @@
 // Ace Game. All Rights Reserved.
 
-#include "Objects/AceBaseItemObject.h"
+#include "Items/Objects/AceBaseItemObject.h"
 
 UTexture2D* UAceBaseItemObject::GetObjectIcon() const
 {

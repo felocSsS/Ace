@@ -2,7 +2,7 @@
 
 #include "Weapon/Attachments/AceBaseWeaponAttachment.h"
 #include "Components/StaticMeshComponent.h"
-#include "Objects/WeaponItemObject/Attachment/AceAttachmentItemObject.h"
+#include "Items/Objects/WeaponItemObject/Attachment/AceAttachmentItemObject.h"
 
 AAceBaseWeaponAttachment::AAceBaseWeaponAttachment()
 {

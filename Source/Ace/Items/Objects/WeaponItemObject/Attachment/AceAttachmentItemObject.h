@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Objects/AceBaseItemObject.h"
+#include "Items/Objects/AceBaseItemObject.h"
 #include "Weapon/Attachments/AceBaseWeaponAttachment.h"
 #include "AceAttachmentItemObject.generated.h"
 

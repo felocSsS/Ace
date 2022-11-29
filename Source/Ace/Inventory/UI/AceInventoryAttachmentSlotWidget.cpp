@@ -10,8 +10,8 @@
 #include "Player/AcePlayerCharacter.h"
 #include "Components/Image.h"
 #include "Inventory/AceInventoryDragDropOperation.h"
-#include "Objects/AceBaseItemObject.h"
-#include "Objects/WeaponItemObject/Attachment/AceAttachmentItemObject.h"
+#include "Items/Objects/AceBaseItemObject.h"
+#include "Items/Objects/WeaponItemObject/Attachment/AceAttachmentItemObject.h"
 #include "UI/AceGameHUD.h"
 #include "Weapon/AceBaseWeapon.h"
 

@@ -4,10 +4,9 @@
 #include "Weapon/AceBaseWeapon.h"
 #include "Player/AceBaseCharacter.h"
 #include "Attachments/AceBaseWeaponAttachment.h"
-#include "Components/AceInventoryComponent.h"
 #include "Components/AceWeaponComponent.h"
-#include "Objects/AceBaseItemObject.h"
-#include "Objects/WeaponItemObject/AceARItemObject.h"
+#include "Items/Objects/AceBaseItemObject.h"
+#include "Items/Objects/WeaponItemObject/AceARItemObject.h"
 #include "Player/AcePlayerCharacter.h"
 
 AAceBaseWeapon::AAceBaseWeapon()

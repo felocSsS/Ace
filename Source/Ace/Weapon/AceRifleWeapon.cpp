@@ -3,7 +3,7 @@
 #include "Weapon/AceRifleWeapon.h"
 #include "Animation/AcePlayerAnimInstance.h"
 #include "GameFramework/Character.h"
-#include "Objects/WeaponItemObject/AceARItemObject.h"
+#include "Items/Objects/WeaponItemObject/AceARItemObject.h"
 
 void AAceRifleWeapon::BeginPlay()
 {

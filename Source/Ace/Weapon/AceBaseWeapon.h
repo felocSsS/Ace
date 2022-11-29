@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Items/AceBaseItem.h"
-#include "Objects/WeaponItemObject/AceARItemObject.h"
+#include "Items/Objects/WeaponItemObject/AceARItemObject.h"
 #include "Player/AcePlayerCharacter.h"
 #include "AceBaseWeapon.generated.h"
 

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "Objects/AceBaseItemObject.h"
 #include "AceGameHUD.generated.h"
 
 class UAcePickUpMessageWidget;

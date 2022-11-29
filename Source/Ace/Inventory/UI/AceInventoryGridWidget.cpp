@@ -9,7 +9,7 @@
 #include "Components/UniformGridSlot.h"
 #include "Inventory/AceInventoryDragDropOperation.h"
 #include "Player/AcePlayerCharacter.h"
-#include "Objects/AceBaseItemObject.h"
+#include "Items/Objects/AceBaseItemObject.h"
 
 void UAceInventoryGridWidget::NativeOnInitialized()
 {

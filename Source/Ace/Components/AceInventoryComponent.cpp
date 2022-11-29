@@ -1,7 +1,7 @@
 // Ace Game. All Rights Reserved.
 
 #include "Components/AceInventoryComponent.h"
-#include "Objects/AceBaseItemObject.h"
+#include "Items/Objects/AceBaseItemObject.h"
 
 UAceInventoryComponent::UAceInventoryComponent()
 {
